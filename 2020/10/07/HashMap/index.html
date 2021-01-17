@@ -4,7 +4,7 @@
 
 <head>
     <meta charset="utf-8">
-    <meta name="keywords" content="Hello World, Hexo">
+    <meta name="keywords" content="Hexo">
     <meta name="description" content="">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
@@ -16,7 +16,7 @@
     <!-- Global site tag (gtag.js) - Google Analytics -->
 
 
-    <title>Hello World | Hexo</title>
+    <title>Hexo</title>
     <link rel="icon" type="image/png" href="/favicon.png">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/all.css">
@@ -310,12 +310,12 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/0.jpg')">
     <div class="container" style="right: 0px;left: 0px;">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
-                    <h1 class="description center-align post-title">Hello World</h1>
+                    <h1 class="description center-align post-title"></h1>
                 </div>
             </div>
         </div>
@@ -443,7 +443,7 @@
                 
                 <div class="post-date info-break-policy">
                     <i class="far fa-calendar-minus fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2021-01-17
+                    2020-10-07
                 </div>
                 
 
@@ -464,15 +464,29 @@
 
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><pre class=" language-bash"><code class="language-bash">$ hexo new <span class="token string">"My New Post"</span></code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><pre class=" language-bash"><code class="language-bash">$ hexo server</code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><pre class=" language-bash"><code class="language-bash">$ hexo generate</code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><pre class=" language-bash"><code class="language-bash">$ hexo deploy</code></pre>
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
+                <p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/skywang12345/p/3310835.html">参考资料</a></p>
+<h3 id="HashMap底层是如何实现的"><a href="#HashMap底层是如何实现的" class="headerlink" title="HashMap底层是如何实现的"></a>HashMap底层是如何实现的</h3><p><img src="https://www.runoob.com/wp-content/uploads/2020/07/WV9wXLl.png" alt="img"></p>
+<p>底层结构：<strong>数组+链表</strong>。<br>其中数组也被称为<strong>哈希桶</strong>，每个<strong>桶里面放的是链表</strong>，链表中的<strong>每个节点</strong>，就是哈希表中的<strong>每个元素</strong>。</p>
+<p>HashMap 的实现不是同步的，这意味着它不是线程安全的。它的key、value都可以为null。此外，HashMap中的映射不是有序的。</p>
+<p>在JDK8中，当链表长度达到8，会转化成<strong>红黑树</strong>，以提升它的查询、插入效率，它实现了<code>Map&lt;K,V&gt;, Cloneable, Serializable</code>接口。</p>
+<p>当<code>HashMap</code>的容量达到<code>threshold</code>域值时，就会触发扩容。扩容前后，哈希桶的<strong>长度一定会是2的次方</strong>。这样在根据key的hash值寻找对应的哈希桶时，可以<strong>用位运算替代取余操作</strong>，<strong>更加高效</strong>。</p>
+<p>而key的hash值，并不仅仅只是key对象的<code>hashCode()</code>方法的返回值，还会经过<strong>扰动函数</strong>的扰动，以使hash值更加均衡。因为当对hash值以桶的长度取余，以找到存放该key的桶的下标时，由于取余是通过与操作完成的，会忽略hash值的高位。因此只有<code>hashCode()</code>的低位参加运算，产生不同的hash值，得到的index相同的情况的几率会大大增加，这种情况称之为<strong>hash碰撞。</strong> 即，碰撞率会增大。<strong>扰动函数</strong>就是为了解决hash碰撞的。它会综合hash值高位和低位的特征，并存放在低位，因此在与运算时，相当于高低位一起参与了运算，以减少hash碰撞的概率。（在JDK8之前，扰动函数会扰动四次，JDK8简化了这个操作）</p>
+<p>扩容操作时，会new一个新的<code>Node</code>数组作为哈希桶，然后将原哈希表中的所有数据(<code>Node</code>节点)移动到新的哈希桶中，相当于对原哈希表中所有的数据重新做了一个put操作。所以性能消耗很大，<strong>可想而知，在哈希表的容量越大时，性能消耗越明显。</strong></p>
+<p>HashMap 的实例有两个参数影响其性能：“<strong>初始容量</strong>” 和 “<strong>加载因子</strong>”。容量 是哈希表中桶的数量，初始容量 只是哈希表在创建时的容量。加载因子 是哈希表在其容量自动增加之前可以达到多满的一种尺度。当哈希表中的条目数超出了加载因子与当前容量的乘积时，则要对该哈希表进行 rehash 操作（即重建内部数据结构），从而哈希表将具有大约两倍的桶数。<br>通常，<strong>默认加载因子是 0.75</strong>, 这是在时间和空间成本上寻求一种折衷。加载因子过高虽然减少了空间开销，但同时也增加了查询成本（在大多数 HashMap 类的操作中，包括 get 和 put 操作，都反映了这一点）。在设置初始容量时应该考虑到映射中所需的条目数及其加载因子，以便最大限度地减少 rehash 操作次数。如果初始容量大于最大条目数除以加载因子，则不会发生 rehash 操作。</p>
+<p>HashMap与Map关系如下图：</p>
+<p><img src="https://images0.cnblogs.com/blog/497634/201401/280024326252470.jpg" alt="img"></p>
+<p>从图中可以看出：</p>
+<ol>
+<li>HashMap继承于AbstractMap类，实现了Map接口。Map是”key-value键值对”接口，AbstractMap实现了”键值对”的通用函数接口。</li>
+<li>HashMap是通过”拉链法”实现的哈希表。它包括几个重要的成员变量：table, size, threshold, loadFactor, modCount。<ul>
+<li>table是一个Entry[]数组类型，而Entry实际上就是一个单向链表。哈希表的”key-value键值对”都是存储在Entry数组中的。</li>
+<li>size是HashMap的大小，它是HashMap保存的键值对的数量。</li>
+<li>threshold是HashMap的阈值，用于判断是否需要调整HashMap的容量。threshold的值=”容量*加载因子”，当HashMap中存储数据的数量达到threshold时，就需要将HashMap的容量加倍。</li>
+<li>loadFactor就是加载因子。</li>
+<li>modCount是用来实现fail-fast机制的。</li>
+</ul>
+</li>
+</ol>
 
                 
             </div>
@@ -499,7 +513,7 @@
                     </i>
                 </span>
                 <span class="reprint-info">
-                    <a href="http://example.com/2021/01/17/hello-world/">http://example.com/2021/01/17/hello-world/</a>
+                    <a href="http://example.com/2020/10/07/HashMap/">http://example.com/2020/10/07/HashMap/</a>
                 </span>
             </div>
             <div class="reprint__notice">
@@ -706,18 +720,17 @@
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="far fa-dot-circle"></i>&nbsp;本篇
-            </div>
+                <i class="fas fa-chevron-left"></i>&nbsp;上一篇</div>
             <div class="card">
-                <a href="/2021/01/17/hello-world/">
+                <a href="/2020/10/08/shell%E7%BC%96%E7%A8%8B/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="Hello World">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
                         
-                        <span class="card-title">Hello World</span>
+                        <span class="card-title"></span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -727,9 +740,9 @@
                         
                     </div>
                     <div class="publish-info">
-                            <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2021-01-17
-                            </span>
+                        <span class="publish-date">
+                            <i class="far fa-clock fa-fw icon-date"></i>2020-10-08
+                        </span>
                         <span class="publish-author">
                             
                             <i class="fas fa-user fa-fw"></i>
@@ -738,7 +751,6 @@
                         </span>
                     </div>
                 </div>
-
                 
             </div>
         </div>
@@ -749,13 +761,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/09/04/Docker%E7%AC%94%E8%AE%B0/">
+                <a href="/2020/09/25/spring%E7%AC%94%E8%AE%B0/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="Docker笔记">
+                        <img src="/medias/featureimages/0.jpg" class="responsive-img" alt="">
                         
-                        <span class="card-title">Docker笔记</span>
+                        <span class="card-title"></span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -766,7 +778,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-09-04
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-09-25
                             </span>
                         <span class="publish-author">
                             
@@ -775,14 +787,6 @@
                             
                         </span>
                     </div>
-                </div>
-                
-                <div class="card-action article-tags">
-                    
-                    <a href="/tags/docker/">
-                        <span class="chip bg-color">docker</span>
-                    </a>
-                    
                 </div>
                 
             </div>
