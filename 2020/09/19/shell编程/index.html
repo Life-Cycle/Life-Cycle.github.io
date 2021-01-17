@@ -474,30 +474,50 @@
 <h3 id="2-初识shell脚本语言"><a href="#2-初识shell脚本语言" class="headerlink" title="2. 初识shell脚本语言"></a>2. 初识shell脚本语言</h3><h4 id="shell脚本语言"><a href="#shell脚本语言" class="headerlink" title="shell脚本语言"></a>shell脚本语言</h4><p>（1）shell脚本（shell script），是一种为shell编写的脚本程序。<br>（2）业界所说的shell通常指shell脚本。所说的shell编程，通常是指shell脚本编程，并不是指开发shell本身。</p>
 <h4 id="shell开发环境"><a href="#shell开发环境" class="headerlink" title="shell开发环境"></a>shell开发环境</h4><p>（1）shell脚本的编程和Java，PHP等语言类似，只需要编写代码的文本编辑器和解释代码的解释器就可以了。<br>（2）Linux 的 Shell 解释器种类众多，常见的有： Bourne Shell（/usr/bin/sh或/bin/sh）、 Bourne Again Shell（/bin/bash）、 C Shell（/usr/bin/csh）、 K Shell（/usr/bin/ksh）、 Shell for Root（/sbin/sh）等。<br>（3）我们通常用的解释器为bash，即 Bourne Again Shell（/bin/bash）。业界通常混用bash、sh、和shell，比如你会经常在招聘运维工程师的文案中见到：熟悉Linux Bash编程，精通Shell编程。在CentOS里，/bin/sh是一个指向/bin/bash的符号链接；但在Mac OS上不是，/bin/sh和/bin/bash是两个不同的文件，尽管它们的大小只相差100字节左右。<br>（4）目前主流操作系统都支持shell编程，Linux默认安装了shell解释器，MacOS不仅带了sh、bash两种最基本的解释器，还内置了ksh、csh、zsh等不常用的解释器。</p>
 <h4 id="shell脚本语言的特点"><a href="#shell脚本语言的特点" class="headerlink" title="shell脚本语言的特点"></a>shell脚本语言的特点</h4><p>（1）解释非编译型——即利用解释器解释代码，而不编译。<br>（2）弱类型——即对于变量不区分变量类型，统一当成字符串看待。<br>（3）执行模式——交互式（命令行命令）和批处理式（shell脚本）。</p>
-<h3 id="3-shell解释器原理"><a href="#3-shell解释器原理" class="headerlink" title="3.shell解释器原理"></a>3.shell解释器原理</h3><h4 id="简单的shell例子"><a href="#简单的shell例子" class="headerlink" title="简单的shell例子"></a>简单的shell例子</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">root:/home/zfl/shell编程# vim helloworld.sh</span><br><span class="line">root:/home/zfl/shell编程# cat helloworld.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">echo &quot;hello world!&quot;</span><br></pre></td></tr></table></figure>
+<h3 id="3-shell解释器原理"><a href="#3-shell解释器原理" class="headerlink" title="3.shell解释器原理"></a>3.shell解释器原理</h3><h4 id="简单的shell例子"><a href="#简单的shell例子" class="headerlink" title="简单的shell例子"></a>简单的shell例子</h4><pre class=" language-shell"><code class="language-shell">root:/home/zfl/shell编程# vim helloworld.sh
+root:/home/zfl/shell编程# cat helloworld.sh
+#!/bin/bash
+echo "hello world!"</code></pre>
 <p>对于上述代码：<br>（1）#！表示shebang(也被称为Hashbang)，后面跟解释器。告诉系统这个程序用什么解释器解释。<br>（2）echo用于向窗口输出文本。</p>
 <blockquote>
 <p><strong>注意</strong></p>
 <p>上面的指定解释器的方式是比较常见的，但有时候，你可能也会看到下面的方式：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/usr/bin/env bash</span></span><br></pre></td></tr></table></figure>
-
+<pre class=" language-bash"><code class="language-bash"><span class="token comment" spellcheck="true">#!/usr/bin/env bash</span></code></pre>
 <p>这样做的好处是，系统会自动在 <code>PATH</code> 环境变量中查找你指定的程序（本例中的<code>bash</code>）。相比第一种写法，你应该尽量用这种写法，因为程序的路径是不确定的。这样写还有一个好处，操作系统的<code>PATH</code>变量有可能被配置为指向程序的另一个版本。比如，安装完新版本的<code>bash</code>，我们可能将其路径添加到<code>PATH</code>中，来“隐藏”老版本。如果直接用<code>#!/bin/bash</code>，那么系统会选择老版本的<code>bash</code>来执行脚本，如果用<code>#!/usr/bin/env bash</code>，则会使用新版本。</p>
 </blockquote>
 <h4 id="执行shell"><a href="#执行shell" class="headerlink" title="执行shell"></a>执行shell</h4><p>（1）作为可执行程序</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">root:/home/zfl/shell编程# chmod +x helloworld.sh # ./helloworld.sh </span><br><span class="line">root:/home/zfl/shell编程# ./helloworld.sh</span><br><span class="line">hello world!</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">root:/home/zfl/shell编程# chmod +x helloworld.sh # ./helloworld.sh 
+root:/home/zfl/shell编程# ./helloworld.sh
+hello world!</code></pre>
 <p>执行原理：第一条命令是为程序加上可执行权限；<br>第二条命令是运行可执行程序，注意必须加上./（当前目录下的程序），否则系统会找不到程序的所在位置。</p>
 <p>（2）作为解释器参数</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">root:/home/zfl/shell编程# /bin/bash helloworld.sh</span><br><span class="line">hello world!</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">root:/home/zfl/shell编程# /bin/bash helloworld.sh
+hello world!</code></pre>
 <p>执行原理：直接运行解释器，其参数就是shell脚本的文件名，此时不需要在shell脚本中写第一行的解释器种类，写了也没用。</p>
 <p>注：shell脚本中用#作为注释符号，与C/C++的//的作用相同。但是第一行的#不表示以上意思，表示shebang。</p>
 <h4 id="shell解释器原理"><a href="#shell解释器原理" class="headerlink" title="shell解释器原理"></a>shell解释器原理</h4><p>对于第一种可执行方式：<br>正常情况下：shell会fork创建子进程，并调用exec执行 ./test.sh这个程序，exec系统调用应该把子进程的代码段替换成./test.sh的代码段，并从它的_start开始执行。<br>但是./test.sh作为文本程序，没有_start函数。<strong>但是exec有另外一种机制，如果要执行的是一个文本文件，并且第一行有shebang指明了解释器，则用解释器代码段替换当前进程。并且从解释器的 _start函数开始执行。</strong>而这个文本文件被当作命令行参数传递给解释器，解释器对文本文件进行解析。</p>
-<h4 id="利用解释器原理解释程序"><a href="#利用解释器原理解释程序" class="headerlink" title="利用解释器原理解释程序"></a>利用解释器原理解释程序</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">root:/home/zfl/shell编程# vim pwd_test.sh</span><br><span class="line">root:/home/zfl/shell编程# cat pwd_test.sh</span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line">pwd</span><br><span class="line">cd ..</span><br><span class="line">pwd</span><br></pre></td></tr></table></figure>
+<h4 id="利用解释器原理解释程序"><a href="#利用解释器原理解释程序" class="headerlink" title="利用解释器原理解释程序"></a>利用解释器原理解释程序</h4><pre class=" language-shell"><code class="language-shell">root:/home/zfl/shell编程# vim pwd_test.sh
+root:/home/zfl/shell编程# cat pwd_test.sh
+#!/bin/bash
+pwd
+cd ..
+pwd</code></pre>
 <p>执行该脚本，输出如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">root:/home/zfl/shell编程# ./pwd_test.sh</span><br><span class="line">/home/zfl/shell编程</span><br><span class="line">/home/zfl</span><br><span class="line">root:/home/zfl/shell编程# pwd</span><br><span class="line">/home/zfl/shell编程</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">root:/home/zfl/shell编程# ./pwd_test.sh
+/home/zfl/shell编程
+/home/zfl
+root:/home/zfl/shell编程# pwd
+/home/zfl/shell编程</code></pre>
 <p>问题：为什么在脚本里面改变了当前路径，但是脚本退出后，当前路径并没有改变呢？</p>
 <p>答：根据bash解释器原理，bash会先创建子bash并调用exec来执行shell脚本程序，而子bash和父bash是相互独立的，子bash的改变不会影响到父bash的改变，所以脚本里面的路径改变，并不会改变脚本外面命令行的路径。</p>
 <h4 id="利用source来执行脚本"><a href="#利用source来执行脚本" class="headerlink" title="利用source来执行脚本"></a>利用source来执行脚本</h4><p>利用<code>source</code>或者<code>.</code>命令来执行脚本，会发现脚本执行完退出后，命令行路径也被改变了。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">root:/home/zfl/shell编程# source pwd_test.sh</span><br><span class="line">/home/zfl/shell编程</span><br><span class="line">/home/zfl</span><br><span class="line">root:/home/zfl# pwd</span><br><span class="line">/home/zfl</span><br><span class="line"><span class="meta">#</span><span class="bash"> 执行一下命令，效果一样</span></span><br><span class="line">root:/home/zfl/shell编程# . pwd_test.sh</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">root:/home/zfl/shell编程# source pwd_test.sh
+/home/zfl/shell编程
+/home/zfl
+root:/home/zfl# pwd
+/home/zfl
+# 执行一下命令，效果一样
+root:/home/zfl/shell编程# . pwd_test.sh</code></pre>
 <p>这是因为<code>source</code>或者<code>.</code>命令是shell的内置命令，通过这种方式来执行脚本，不会创建子shell，而是直接在交互式shell下逐条执行脚本中的命令。</p>
 <p>source 命令是 bash shell 的内置命令，从 C Shell 而来。<br>source 命令的另一种写法是点符号，用法和 source 相同，从Bourne Shell而来。<br>source 命令可以强行让一个脚本去立即影响当前的环境。<br>source 命令会强制执行脚本中的全部命令,而忽略文件的权限。<br>source 命令通常用于重新执行刚修改的初始化文件，如 .bash_profile 和 .profile 等等。<br>source 命令可以影响执行脚本的父shell的环境，而 export 则只能影响其子shell的环境。</p>
 <h3 id="三剑客grep-awk-sed"><a href="#三剑客grep-awk-sed" class="headerlink" title="三剑客grep awk sed"></a>三剑客grep awk sed</h3><p>sh脚本结合系统命令便有了强大的威力，在字符处理领域，有grep、awk、sed三剑客，grep负责找出特定的行，awk能将行拆分成多个字段，sed则可以实现更新插入删除等写操作。</p>
@@ -507,11 +527,50 @@
 <li>单行注释 - 以 <code>#</code> 开头，到行尾结束。</li>
 <li>多行注释 - 以 <code>:&lt;&lt;EOF</code> 开头，到 <code>EOF</code> 结束。</li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">--------------------------------------------</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> shell 注释示例</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> author：zp</span></span><br><span class="line"><span class="meta">#</span><span class="bash">--------------------------------------------</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> <span class="built_in">echo</span> <span class="string">&#x27;这是单行注释&#x27;</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">######### 这是分割线 ##########</span></span></span><br><span class="line">:&lt;&lt;EOF</span><br><span class="line">echo &#x27;这是多行注释&#x27;</span><br><span class="line">echo &#x27;这是多行注释&#x27;</span><br><span class="line">echo &#x27;这是多行注释&#x27;</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">#--------------------------------------------
+# shell 注释示例
+# author：zp
+#--------------------------------------------
+# echo '这是单行注释'
+########## 这是分割线 ##########
+:<<EOF
+echo '这是多行注释'
+echo '这是多行注释'
+echo '这是多行注释'
+EOF</code></pre>
 <h3 id="数组"><a href="#数组" class="headerlink" title="数组"></a>数组</h3><p>bash 只支持一维数组。</p>
 <p>数组下标从 0 开始，下标可以是整数或算术表达式，其值应大于或等于 0。</p>
-<h4 id="创建数组"><a href="#创建数组" class="headerlink" title="创建数组"></a>创建数组</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 创建数组的不同方式</span></span><br><span class="line">nums=([2]=2 [0]=0 [1]=1)</span><br><span class="line">colors=(red yellow &quot;dark blue&quot;)</span><br></pre></td></tr></table></figure>
-<h4 id="访问数组元素"><a href="#访问数组元素" class="headerlink" title="访问数组元素"></a>访问数组元素</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 访问单个元素</span></span><br><span class="line">echo $&#123;nums[1]&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash"> Output: 1</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 访问所有元素</span></span><br><span class="line">echo $&#123;colors[*]&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash"> Output: red yellow dark blue</span></span><br><span class="line"></span><br><span class="line">echo $&#123;colors[@]&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash"> Output: red yellow dark blue</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 说明：<span class="variable">$&#123;colors[@]&#125;</span>将数组中的每个元素扩展为一个单独的参数；数组元素中的空格得以保留。</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 访问数组长度</span></span><br><span class="line">echo $&#123;#nums[*]&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash"> Output:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 向数组中添加元素</span></span><br><span class="line">colors=(white &quot;$&#123;colors[@]&#125;&quot; green black)</span><br><span class="line">echo $&#123;colors[@]&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash"> Output:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> white red yellow dark blue green black</span></span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 从数组中删除元素</span></span><br><span class="line">unset nums[0]</span><br><span class="line">echo $&#123;nums[@]&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash"> Output:</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 1 2</span></span><br></pre></td></tr></table></figure>
+<h4 id="创建数组"><a href="#创建数组" class="headerlink" title="创建数组"></a>创建数组</h4><pre class=" language-shell"><code class="language-shell"># 创建数组的不同方式
+nums=([2]=2 [0]=0 [1]=1)
+colors=(red yellow "dark blue")</code></pre>
+<h4 id="访问数组元素"><a href="#访问数组元素" class="headerlink" title="访问数组元素"></a>访问数组元素</h4><pre class=" language-shell"><code class="language-shell"># 访问单个元素
+echo $&#123;nums[1]&#125;
+# Output: 1
+
+# 访问所有元素
+echo $&#123;colors[*]&#125;
+# Output: red yellow dark blue
+
+echo $&#123;colors[@]&#125;
+# Output: red yellow dark blue
+# 说明：$&#123;colors[@]&#125;将数组中的每个元素扩展为一个单独的参数；数组元素中的空格得以保留。
+
+# 访问数组长度
+echo $&#123;#nums[*]&#125;
+# Output:
+# 3
+
+# 向数组中添加元素
+colors=(white "$&#123;colors[@]&#125;" green black)
+echo $&#123;colors[@]&#125;
+# Output:
+# white red yellow dark blue green black
+
+# 从数组中删除元素
+unset nums[0]
+echo $&#123;nums[@]&#125;
+# Output:
+# 1 2</code></pre>
 <h3 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h3><h4 id="数学运算符"><a href="#数学运算符" class="headerlink" title="数学运算符"></a>数学运算符</h4><p>下表列出了常用的算术运算符，假定变量 x 为 10，变量 y 为 20：</p>
 <table>
 <thead>
@@ -564,7 +623,44 @@
 </tbody></table>
 <p><strong>注意：</strong>条件表达式要放在方括号之间，并且要有空格，例如: <code>[$x==$y]</code> 是错误的，必须写成 <code>[ $x == $y ]</code>。</p>
 <p>示例：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><span class="line">x=10</span><br><span class="line">y=20</span><br><span class="line"></span><br><span class="line">echo &quot;x=$&#123;x&#125;, y=$&#123;y&#125;&quot;</span><br><span class="line"></span><br><span class="line">val=`expr $&#123;x&#125; + $&#123;y&#125;`</span><br><span class="line">echo &quot;$&#123;x&#125; + $&#123;y&#125; = $val&quot;</span><br><span class="line"></span><br><span class="line">val=`expr $&#123;x&#125; - $&#123;y&#125;`</span><br><span class="line">echo &quot;$&#123;x&#125; - $&#123;y&#125; = $val&quot;</span><br><span class="line"></span><br><span class="line">val=`expr $&#123;x&#125; \* $&#123;y&#125;`</span><br><span class="line">echo &quot;$&#123;x&#125; * $&#123;y&#125; = $val&quot;</span><br><span class="line"></span><br><span class="line">val=`expr $&#123;y&#125; / $&#123;x&#125;`</span><br><span class="line">echo &quot;$&#123;y&#125; / $&#123;x&#125; = $val&quot;</span><br><span class="line"></span><br><span class="line">val=`expr $&#123;y&#125; % $&#123;x&#125;`</span><br><span class="line">echo &quot;$&#123;y&#125; % $&#123;x&#125; = $val&quot;</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; == $&#123;y&#125; ]]</span><br><span class="line">then</span><br><span class="line">  echo &quot;$&#123;x&#125; = $&#123;y&#125;&quot;</span><br><span class="line">fi</span><br><span class="line">if [[ $&#123;x&#125; != $&#123;y&#125; ]]</span><br><span class="line">then</span><br><span class="line">  echo &quot;$&#123;x&#125; != $&#123;y&#125;&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">  Execute: ./operator-demo.sh</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Output:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  x=10, y=20</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 + 20 = 30</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 - 20 = -10</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 * 20 = 200</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  20 / 10 = 2</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  20 % 10 = 0</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 != 20</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">x=10
+y=20
+
+echo "x=$&#123;x&#125;, y=$&#123;y&#125;"
+
+val=`expr $&#123;x&#125; + $&#123;y&#125;`
+echo "$&#123;x&#125; + $&#123;y&#125; = $val"
+
+val=`expr $&#123;x&#125; - $&#123;y&#125;`
+echo "$&#123;x&#125; - $&#123;y&#125; = $val"
+
+val=`expr $&#123;x&#125; \* $&#123;y&#125;`
+echo "$&#123;x&#125; * $&#123;y&#125; = $val"
+
+val=`expr $&#123;y&#125; / $&#123;x&#125;`
+echo "$&#123;y&#125; / $&#123;x&#125; = $val"
+
+val=`expr $&#123;y&#125; % $&#123;x&#125;`
+echo "$&#123;y&#125; % $&#123;x&#125; = $val"
+
+if [[ $&#123;x&#125; == $&#123;y&#125; ]]
+then
+  echo "$&#123;x&#125; = $&#123;y&#125;"
+fi
+if [[ $&#123;x&#125; != $&#123;y&#125; ]]
+then
+  echo "$&#123;x&#125; != $&#123;y&#125;"
+fi
+
+#  Execute: ./operator-demo.sh
+#  Output:
+#  x=10, y=20
+#  10 + 20 = 30
+#  10 - 20 = -10
+#  10 * 20 = 200
+#  20 / 10 = 2
+#  20 % 10 = 0
+#  10 != 20</code></pre>
 <h4 id="关系运算符"><a href="#关系运算符" class="headerlink" title="关系运算符"></a>关系运算符</h4><p>关系运算符只支持数字，不支持字符串，除非字符串的值是数字。</p>
 <p>下表列出了常用的关系运算符，假定变量 x 为 10，变量 y 为 20：</p>
 <table>
@@ -607,7 +703,56 @@
 </tr>
 </tbody></table>
 <p>示例：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">x=10</span><br><span class="line">y=20</span><br><span class="line"></span><br><span class="line">echo &quot;x=$&#123;x&#125;, y=$&#123;y&#125;&quot;</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; -eq $&#123;y&#125; ]]; then</span><br><span class="line">   echo &quot;$&#123;x&#125; -eq $&#123;y&#125; : x 等于 y&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;$&#123;x&#125; -eq $&#123;y&#125;: x 不等于 y&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; -ne $&#123;y&#125; ]]; then</span><br><span class="line">   echo &quot;$&#123;x&#125; -ne $&#123;y&#125;: x 不等于 y&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;$&#123;x&#125; -ne $&#123;y&#125;: x 等于 y&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; -gt $&#123;y&#125; ]]; then</span><br><span class="line">   echo &quot;$&#123;x&#125; -gt $&#123;y&#125;: x 大于 y&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;$&#123;x&#125; -gt $&#123;y&#125;: x 不大于 y&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; -lt $&#123;y&#125; ]]; then</span><br><span class="line">   echo &quot;$&#123;x&#125; -lt $&#123;y&#125;: x 小于 y&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;$&#123;x&#125; -lt $&#123;y&#125;: x 不小于 y&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; -ge $&#123;y&#125; ]]; then</span><br><span class="line">   echo &quot;$&#123;x&#125; -ge $&#123;y&#125;: x 大于或等于 y&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;$&#123;x&#125; -ge $&#123;y&#125;: x 小于 y&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; -le $&#123;y&#125; ]]; then</span><br><span class="line">   echo &quot;$&#123;x&#125; -le $&#123;y&#125;: x 小于或等于 y&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;$&#123;x&#125; -le $&#123;y&#125;: x 大于 y&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">  Execute: ./operator-demo2.sh</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Output:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  x=10, y=20</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 -eq 20: x 不等于 y</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 -ne 20: x 不等于 y</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 -gt 20: x 不大于 y</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 -lt 20: x 小于 y</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 -ge 20: x 小于 y</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 -le 20: x 小于或等于 y</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">x=10
+y=20
+
+echo "x=$&#123;x&#125;, y=$&#123;y&#125;"
+
+if [[ $&#123;x&#125; -eq $&#123;y&#125; ]]; then
+   echo "$&#123;x&#125; -eq $&#123;y&#125; : x 等于 y"
+else
+   echo "$&#123;x&#125; -eq $&#123;y&#125;: x 不等于 y"
+fi
+
+if [[ $&#123;x&#125; -ne $&#123;y&#125; ]]; then
+   echo "$&#123;x&#125; -ne $&#123;y&#125;: x 不等于 y"
+else
+   echo "$&#123;x&#125; -ne $&#123;y&#125;: x 等于 y"
+fi
+
+if [[ $&#123;x&#125; -gt $&#123;y&#125; ]]; then
+   echo "$&#123;x&#125; -gt $&#123;y&#125;: x 大于 y"
+else
+   echo "$&#123;x&#125; -gt $&#123;y&#125;: x 不大于 y"
+fi
+
+if [[ $&#123;x&#125; -lt $&#123;y&#125; ]]; then
+   echo "$&#123;x&#125; -lt $&#123;y&#125;: x 小于 y"
+else
+   echo "$&#123;x&#125; -lt $&#123;y&#125;: x 不小于 y"
+fi
+
+if [[ $&#123;x&#125; -ge $&#123;y&#125; ]]; then
+   echo "$&#123;x&#125; -ge $&#123;y&#125;: x 大于或等于 y"
+else
+   echo "$&#123;x&#125; -ge $&#123;y&#125;: x 小于 y"
+fi
+
+if [[ $&#123;x&#125; -le $&#123;y&#125; ]]; then
+   echo "$&#123;x&#125; -le $&#123;y&#125;: x 小于或等于 y"
+else
+   echo "$&#123;x&#125; -le $&#123;y&#125;: x 大于 y"
+fi
+
+#  Execute: ./operator-demo2.sh
+#  Output:
+#  x=10, y=20
+#  10 -eq 20: x 不等于 y
+#  10 -ne 20: x 不等于 y
+#  10 -gt 20: x 不大于 y
+#  10 -lt 20: x 小于 y
+#  10 -ge 20: x 小于 y
+#  10 -le 20: x 小于或等于 y</code></pre>
 <h4 id="布尔运算符"><a href="#布尔运算符" class="headerlink" title="布尔运算符"></a>布尔运算符</h4><p>下表列出了常用的布尔运算符，假定变量 a 为 10，变量 b 为 20：</p>
 <table>
 <thead>
@@ -654,7 +799,30 @@
 </tr>
 </tbody></table>
 <p>示例：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">x=10</span><br><span class="line">y=20</span><br><span class="line"></span><br><span class="line">echo &quot;x=$&#123;x&#125;, y=$&#123;y&#125;&quot;</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; -lt 100 &amp;&amp; $&#123;y&#125; -gt 100 ]]</span><br><span class="line">then</span><br><span class="line">   echo &quot;$&#123;x&#125; -lt 100 &amp;&amp; $&#123;y&#125; -gt 100 返回 true&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;$&#123;x&#125; -lt 100 &amp;&amp; $&#123;y&#125; -gt 100 返回 false&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; -lt 100 || $&#123;y&#125; -gt 100 ]]</span><br><span class="line">then</span><br><span class="line">   echo &quot;$&#123;x&#125; -lt 100 || $&#123;y&#125; -gt 100 返回 true&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;$&#123;x&#125; -lt 100 || $&#123;y&#125; -gt 100 返回 false&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">  Execute: ./operator-demo4.sh</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Output:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  x=10, y=20</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 -lt 100 &amp;&amp; 20 -gt 100 返回 <span class="literal">false</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash">  10 -lt 100 || 20 -gt 100 返回 <span class="literal">true</span></span></span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">x=10
+y=20
+
+echo "x=$&#123;x&#125;, y=$&#123;y&#125;"
+
+if [[ $&#123;x&#125; -lt 100 && $&#123;y&#125; -gt 100 ]]
+then
+   echo "$&#123;x&#125; -lt 100 && $&#123;y&#125; -gt 100 返回 true"
+else
+   echo "$&#123;x&#125; -lt 100 && $&#123;y&#125; -gt 100 返回 false"
+fi
+
+if [[ $&#123;x&#125; -lt 100 || $&#123;y&#125; -gt 100 ]]
+then
+   echo "$&#123;x&#125; -lt 100 || $&#123;y&#125; -gt 100 返回 true"
+else
+   echo "$&#123;x&#125; -lt 100 || $&#123;y&#125; -gt 100 返回 false"
+fi
+
+#  Execute: ./operator-demo4.sh
+#  Output:
+#  x=10, y=20
+#  10 -lt 100 && 20 -gt 100 返回 false
+#  10 -lt 100 || 20 -gt 100 返回 true</code></pre>
 <h4 id="字符串运算符"><a href="#字符串运算符" class="headerlink" title="字符串运算符"></a>字符串运算符</h4><p>下表列出了常用的字符串运算符，假定变量 a 为 “abc”，变量 b 为 “efg”：</p>
 <table>
 <thead>
@@ -691,37 +859,191 @@
 </tr>
 </tbody></table>
 <p>示例：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">x=&quot;abc&quot;</span><br><span class="line">y=&quot;xyz&quot;</span><br><span class="line">echo &quot;x=$&#123;x&#125;, y=$&#123;y&#125;&quot;</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; = $&#123;y&#125; ]]; then</span><br><span class="line">   echo &quot;$&#123;x&#125; = $&#123;y&#125; : x 等于 y&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;$&#123;x&#125; = $&#123;y&#125;: x 不等于 y&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; != $&#123;y&#125; ]]; then</span><br><span class="line">   echo &quot;$&#123;x&#125; != $&#123;y&#125; : x 不等于 y&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;$&#123;x&#125; != $&#123;y&#125;: x 等于 y&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [[ -z $&#123;x&#125; ]]; then</span><br><span class="line">   echo &quot;-z $&#123;x&#125; : 字符串长度为 0&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;-z $&#123;x&#125; : 字符串长度不为 0&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [[ -n &quot;$&#123;x&#125;&quot; ]]; then</span><br><span class="line">   echo &quot;-n $&#123;x&#125; : 字符串长度不为 0&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;-n $&#123;x&#125; : 字符串长度为 0&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line">if [[ $&#123;x&#125; ]]; then</span><br><span class="line">   echo &quot;$&#123;x&#125; : 字符串不为空&quot;</span><br><span class="line">else</span><br><span class="line">   echo &quot;$&#123;x&#125; : 字符串为空&quot;</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash">  Execute: ./operator-demo5.sh</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  Output:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  x=abc, y=xyz</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  abc = xyz: x 不等于 y</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  abc != xyz : x 不等于 y</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  -z abc : 字符串长度不为 0</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  -n abc : 字符串长度不为 0</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  abc : 字符串不为空</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">x="abc"
+y="xyz"
+echo "x=$&#123;x&#125;, y=$&#123;y&#125;"
+
+if [[ $&#123;x&#125; = $&#123;y&#125; ]]; then
+   echo "$&#123;x&#125; = $&#123;y&#125; : x 等于 y"
+else
+   echo "$&#123;x&#125; = $&#123;y&#125;: x 不等于 y"
+fi
+
+if [[ $&#123;x&#125; != $&#123;y&#125; ]]; then
+   echo "$&#123;x&#125; != $&#123;y&#125; : x 不等于 y"
+else
+   echo "$&#123;x&#125; != $&#123;y&#125;: x 等于 y"
+fi
+
+if [[ -z $&#123;x&#125; ]]; then
+   echo "-z $&#123;x&#125; : 字符串长度为 0"
+else
+   echo "-z $&#123;x&#125; : 字符串长度不为 0"
+fi
+
+if [[ -n "$&#123;x&#125;" ]]; then
+   echo "-n $&#123;x&#125; : 字符串长度不为 0"
+else
+   echo "-n $&#123;x&#125; : 字符串长度为 0"
+fi
+
+if [[ $&#123;x&#125; ]]; then
+   echo "$&#123;x&#125; : 字符串不为空"
+else
+   echo "$&#123;x&#125; : 字符串为空"
+fi
+
+#  Execute: ./operator-demo5.sh
+#  Output:
+#  x=abc, y=xyz
+#  abc = xyz: x 不等于 y
+#  abc != xyz : x 不等于 y
+#  -z abc : 字符串长度不为 0
+#  -n abc : 字符串长度不为 0
+#  abc : 字符串不为空</code></pre>
 <h4 id="文件测试运算符"><a href="#文件测试运算符" class="headerlink" title="文件测试运算符"></a>文件测试运算符</h4><p>文件测试运算符用于检测 Unix 文件的各种属性。</p>
 <h3 id="管道"><a href="#管道" class="headerlink" title="管道"></a>管道</h3><h3 id="条件语句"><a href="#条件语句" class="headerlink" title="条件语句"></a>条件语句</h3><p>跟其它程序设计语言一样，Bash 中的条件语句让我们可以决定一个操作是否被执行。结果取决于一个包在<code>[[ ]]</code>里的表达式。</p>
 <p>由<code>[[ ]]</code>（<code>sh</code>中是<code>[ ]</code>）包起来的表达式被称作 <strong>检测命令</strong> 或 <strong>基元</strong>。这些表达式帮助我们检测一个条件的结果。这里可以找到有关<a target="_blank" rel="noopener" href="http://serverfault.com/a/52050">bash 中单双中括号区别</a>的答案。</p>
 <p>共有两个不同的条件表达式：<code>if</code>和<code>case</code>。</p>
 <h4 id="if"><a href="#if" class="headerlink" title="if"></a><strong>if</strong></h4><p>在sh/bash里如果else分支没有语句执行，就不要写这个else。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">if condition</span><br><span class="line">then</span><br><span class="line">	command1 </span><br><span class="line">	command2</span><br><span class="line">	...</span><br><span class="line">	commandN </span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">if condition
+then
+    command1 
+    command2
+    ...
+    commandN 
+fi</code></pre>
 <p>写成一行（适用于终端命令提示符）：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if `ps -ef | grep ssh`;  then echo hello; fi</span><br><span class="line"></span><br><span class="line">if [[ 1 -eq 1 ]]; then echo &quot;1 -eq 1 result is: true&quot;; fi</span><br></pre></td></tr></table></figure>
-<h4 id="if-else"><a href="#if-else" class="headerlink" title="if else"></a><strong>if else</strong></h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">if condition</span><br><span class="line">then</span><br><span class="line">	command1 </span><br><span class="line">	command2</span><br><span class="line">	...</span><br><span class="line">	commandN</span><br><span class="line">else</span><br><span class="line">	command</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
-<h4 id="if-else-if-else"><a href="#if-else-if-else" class="headerlink" title="if else-if else"></a><strong>if else-if else</strong></h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">if condition1</span><br><span class="line">then</span><br><span class="line">	command1</span><br><span class="line">elif condition2</span><br><span class="line">	command2</span><br><span class="line">else</span><br><span class="line">	commandN</span><br><span class="line">fi</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">if `ps -ef | grep ssh`;  then echo hello; fi
+
+if [[ 1 -eq 1 ]]; then echo "1 -eq 1 result is: true"; fi</code></pre>
+<h4 id="if-else"><a href="#if-else" class="headerlink" title="if else"></a><strong>if else</strong></h4><pre class=" language-shell"><code class="language-shell">if condition
+then
+    command1 
+    command2
+    ...
+    commandN
+else
+    command
+fi</code></pre>
+<h4 id="if-else-if-else"><a href="#if-else-if-else" class="headerlink" title="if else-if else"></a><strong>if else-if else</strong></h4><pre class=" language-shell"><code class="language-shell">if condition1
+then
+    command1
+elif condition2
+    command2
+else
+    commandN
+fi</code></pre>
 <h4 id="case"><a href="#case" class="headerlink" title="case"></a>case</h4><p>如果你需要面对很多情况，分别要采取不同的措施，那么使用<code>case</code>会比嵌套的<code>if</code>更有用。使用<code>case</code>来解决复杂的条件判断，看起来像下面这样：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">exec</span><br><span class="line">case $&#123;oper&#125; in</span><br><span class="line">  &quot;+&quot;)</span><br><span class="line">    val=`expr $&#123;x&#125; + $&#123;y&#125;`</span><br><span class="line">    echo &quot;$&#123;x&#125; + $&#123;y&#125; = $&#123;val&#125;&quot;</span><br><span class="line">  ;;</span><br><span class="line">  &quot;-&quot;)</span><br><span class="line">    val=`expr $&#123;x&#125; - $&#123;y&#125;`</span><br><span class="line">    echo &quot;$&#123;x&#125; - $&#123;y&#125; = $&#123;val&#125;&quot;</span><br><span class="line">  ;;</span><br><span class="line">  &quot;*&quot;)</span><br><span class="line">    val=`expr $&#123;x&#125; \* $&#123;y&#125;`</span><br><span class="line">    echo &quot;$&#123;x&#125; * $&#123;y&#125; = $&#123;val&#125;&quot;</span><br><span class="line">  ;;</span><br><span class="line">  &quot;/&quot;)</span><br><span class="line">    val=`expr $&#123;x&#125; / $&#123;y&#125;`</span><br><span class="line">    echo &quot;$&#123;x&#125; / $&#123;y&#125; = $&#123;val&#125;&quot;</span><br><span class="line">  ;;</span><br><span class="line">  *)</span><br><span class="line">    echo &quot;Unknown oper!&quot;</span><br><span class="line">  ;;</span><br><span class="line">esac</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">exec
+case $&#123;oper&#125; in
+  "+")
+    val=`expr $&#123;x&#125; + $&#123;y&#125;`
+    echo "$&#123;x&#125; + $&#123;y&#125; = $&#123;val&#125;"
+  ;;
+  "-")
+    val=`expr $&#123;x&#125; - $&#123;y&#125;`
+    echo "$&#123;x&#125; - $&#123;y&#125; = $&#123;val&#125;"
+  ;;
+  "*")
+    val=`expr $&#123;x&#125; \* $&#123;y&#125;`
+    echo "$&#123;x&#125; * $&#123;y&#125; = $&#123;val&#125;"
+  ;;
+  "/")
+    val=`expr $&#123;x&#125; / $&#123;y&#125;`
+    echo "$&#123;x&#125; / $&#123;y&#125; = $&#123;val&#125;"
+  ;;
+  *)
+    echo "Unknown oper!"
+  ;;
+esac</code></pre>
 <p>每种情况都是匹配了某个模式的表达式。<code>|</code>用来分割多个模式，<code>)</code>用来结束一个模式序列。第一个匹配上的模式对应的命令将会被执行。<code>*</code>代表任何不匹配以上给定模式的模式。命令块儿之间要用<code>;;</code>分隔。</p>
-<h3 id="循环语句"><a href="#循环语句" class="headerlink" title="循环语句"></a>循环语句</h3><h4 id="for"><a href="#for" class="headerlink" title="for"></a><strong>for</strong></h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">for var in item1 item2 ... itemN</span><br><span class="line">do</span><br><span class="line">	command1</span><br><span class="line">	command2</span><br><span class="line">	...</span><br><span class="line">	commandN</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 示例：把所有的.bash文件移动到script文件夹中，并给它们可执行权限</span></span><br><span class="line">DIR=/home/zp</span><br><span class="line">for FILE in $&#123;DIR&#125;/*.sh; do</span><br><span class="line">	chmod +x $FILE</span><br><span class="line">  mv &quot;$FILE&quot; &quot;$&#123;DIR&#125;/scripts&quot;</span><br><span class="line">done</span><br><span class="line"><span class="meta">#</span><span class="bash"> 将 /home/zp 目录下所有 sh 文件拷贝到 /home/zp/scripts</span></span><br></pre></td></tr></table></figure>
+<h3 id="循环语句"><a href="#循环语句" class="headerlink" title="循环语句"></a>循环语句</h3><h4 id="for"><a href="#for" class="headerlink" title="for"></a><strong>for</strong></h4><pre class=" language-shell"><code class="language-shell">for var in item1 item2 ... itemN
+do
+    command1
+    command2
+    ...
+    commandN
+done
+
+# 示例：把所有的.bash文件移动到script文件夹中，并给它们可执行权限
+DIR=/home/zp
+for FILE in $&#123;DIR&#125;/*.sh; do
+    chmod +x $FILE
+  mv "$FILE" "$&#123;DIR&#125;/scripts"
+done
+# 将 /home/zp 目录下所有 sh 文件拷贝到 /home/zp/scripts</code></pre>
 <p>写成一行</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">for var in item1 item2 ... itemN; do command1; command2… done;</span><br></pre></td></tr></table></figure>
-<h4 id="C风格的for"><a href="#C风格的for" class="headerlink" title="C风格的for"></a><strong>C风格的for</strong></h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">for (( EXP1; EXP2; EXP3 ))</span><br><span class="line">do</span><br><span class="line">	command1</span><br><span class="line">	command2</span><br><span class="line">	command3</span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 示例</span></span><br><span class="line">for (( i = 0; i &lt; 10; i++ )); do</span><br><span class="line">  echo $i</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
-<h4 id="while"><a href="#while" class="headerlink" title="while"></a><strong>while</strong></h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">while [[ condition ]]</span><br><span class="line">do</span><br><span class="line"><span class="meta">  #</span><span class="bash"><span class="comment">## 语句</span></span></span><br><span class="line">done</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 示例：0到9之间每个数的平方</span></span><br><span class="line">x=0</span><br><span class="line">while [[ $&#123;x&#125; -lt 10 ]]; do</span><br><span class="line">	echo $((x*x))</span><br><span class="line">	x=$((x+1))</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">for var in item1 item2 ... itemN; do command1; command2… done;</code></pre>
+<h4 id="C风格的for"><a href="#C风格的for" class="headerlink" title="C风格的for"></a><strong>C风格的for</strong></h4><pre class=" language-shell"><code class="language-shell">for (( EXP1; EXP2; EXP3 ))
+do
+    command1
+    command2
+    command3
+done
+
+# 示例
+for (( i = 0; i < 10; i++ )); do
+  echo $i
+done</code></pre>
+<h4 id="while"><a href="#while" class="headerlink" title="while"></a><strong>while</strong></h4><pre class=" language-shell"><code class="language-shell">while [[ condition ]]
+do
+  ### 语句
+done
+
+# 示例：0到9之间每个数的平方
+x=0
+while [[ $&#123;x&#125; -lt 10 ]]; do
+    echo $((x*x))
+    x=$((x+1))
+done</code></pre>
 <h4 id="until循环"><a href="#until循环" class="headerlink" title="until循环"></a>until循环</h4><p><code>until</code>循环跟<code>while</code>循环正好相反。它跟<code>while</code>一样也需要检测一个测试条件，但不同的是，只要该条件为 <em>假</em> 就一直执行循环：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">x=0</span><br><span class="line">until [[ $&#123;x&#125; -ge 5 ]]; do</span><br><span class="line">  echo $&#123;x&#125;</span><br><span class="line">  x=`expr $&#123;x&#125; + 1`</span><br><span class="line">done</span><br><span class="line"><span class="meta">#</span><span class="bash">  Output:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  0</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  2</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  3</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  4</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">x=0
+until [[ $&#123;x&#125; -ge 5 ]]; do
+  echo $&#123;x&#125;
+  x=`expr $&#123;x&#125; + 1`
+done
+#  Output:
+#  0
+#  1
+#  2
+#  3
+#  4</code></pre>
 <h4 id="select循环"><a href="#select循环" class="headerlink" title="select循环"></a>select循环</h4><p><code>select</code>循环帮助我们组织一个用户菜单。它的语法几乎跟<code>for</code>循环一致：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">select answer in elem1 elem2 ... elemN</span><br><span class="line">do</span><br><span class="line"><span class="meta">  #</span><span class="bash"><span class="comment">## 语句</span></span></span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">select answer in elem1 elem2 ... elemN
+do
+  ### 语句
+done</code></pre>
 <p><code>select</code>会打印<code>elem1..elemN</code>以及它们的序列号到屏幕上，之后会提示用户输入。通常看到的是<code>$?</code>（<code>PS3</code>变量）。用户的选择结果会被保存到<code>answer</code>中。如果<code>answer</code>是一个在<code>1..N</code>之间的数字，那么<code>语句</code>会被执行，紧接着会进行下一次迭代 —— 如果不想这样的话我们可以使用<code>break</code>语句。</p>
 <p>一个可能的示例如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/env bash</span></span><br><span class="line"></span><br><span class="line">PS3=&quot;Choose the package manager: &quot;</span><br><span class="line">select ITEM in bower npm gem pip</span><br><span class="line">do</span><br><span class="line">echo -n &quot;Enter the package name: &quot; &amp;&amp; read PACKAGE</span><br><span class="line">case $&#123;ITEM&#125; in</span><br><span class="line">  bower) bower install $&#123;PACKAGE&#125; ;;</span><br><span class="line">  npm) npm install $&#123;PACKAGE&#125; ;;</span><br><span class="line">  gem) gem install $&#123;PACKAGE&#125; ;;</span><br><span class="line">  pip) pip install $&#123;PACKAGE&#125; ;;</span><br><span class="line">esac</span><br><span class="line">break # 避免无限循环</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">#!/usr/bin/env bash
+
+PS3="Choose the package manager: "
+select ITEM in bower npm gem pip
+do
+echo -n "Enter the package name: " && read PACKAGE
+case $&#123;ITEM&#125; in
+  bower) bower install $&#123;PACKAGE&#125; ;;
+  npm) npm install $&#123;PACKAGE&#125; ;;
+  gem) gem install $&#123;PACKAGE&#125; ;;
+  pip) pip install $&#123;PACKAGE&#125; ;;
+esac
+break # 避免无限循环
+done</code></pre>
 <p>这个例子，先询问用户他想使用什么包管理器。接着，又询问了想安装什么包，最后执行安装操作。运行这个脚本，会得到如下输出：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./my_script</span></span><br><span class="line">1) bower</span><br><span class="line">2) npm</span><br><span class="line">3) gem</span><br><span class="line">4) pip</span><br><span class="line">Choose the package manager: 2</span><br><span class="line">Enter the package name: gitbook-cli</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">$ ./my_script
+1) bower
+2) npm
+3) gem
+4) pip
+Choose the package manager: 2
+Enter the package name: gitbook-cli</code></pre>
 <h4 id="break-continue"><a href="#break-continue" class="headerlink" title="break, continue"></a>break, continue</h4><p>如果想提前结束一个循环或跳过某次循环执行，可以使用 shell 的<code>break</code>和<code>continue</code>语句来实现。它们可以在任何循环中使用。</p>
 <h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>bash 函数定义语法如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[ function ] funname [()] &#123;</span><br><span class="line">    action;</span><br><span class="line">    [return int;]</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">[ function ] funname [()] &#123;
+    action;
+    [return int;]
+&#125;</code></pre>
 <blockquote>
 <p>说明：</p>
 <ol>
@@ -732,9 +1054,48 @@
 </ol>
 </blockquote>
 <p>示例：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/usr/bin/env bash</span></span><br><span class="line"></span><br><span class="line">calc()&#123;</span><br><span class="line">  PS3=&quot;choose the oper: &quot;</span><br><span class="line">  select oper in + - \* / # 生成操作符选择菜单</span><br><span class="line">  do</span><br><span class="line">  echo -n &quot;enter first num: &quot; &amp;&amp; read x # 读取输入参数</span><br><span class="line">  echo -n &quot;enter second num: &quot; &amp;&amp; read y # 读取输入参数</span><br><span class="line">  exec</span><br><span class="line">  case $&#123;oper&#125; in</span><br><span class="line">    &quot;+&quot;)</span><br><span class="line">      return $(($&#123;x&#125; + $&#123;y&#125;))</span><br><span class="line">    ;;</span><br><span class="line">    &quot;-&quot;)</span><br><span class="line">      return $(($&#123;x&#125; - $&#123;y&#125;))</span><br><span class="line">    ;;</span><br><span class="line">    &quot;*&quot;)</span><br><span class="line">      return $(($&#123;x&#125; * $&#123;y&#125;))</span><br><span class="line">    ;;</span><br><span class="line">    &quot;/&quot;)</span><br><span class="line">      return $(($&#123;x&#125; / $&#123;y&#125;))</span><br><span class="line">    ;;</span><br><span class="line">    *)</span><br><span class="line">      echo &quot;$&#123;oper&#125; is not support!&quot;</span><br><span class="line">      return 0</span><br><span class="line">    ;;</span><br><span class="line">  esac</span><br><span class="line">  break</span><br><span class="line">  done</span><br><span class="line">&#125;</span><br><span class="line">calc</span><br><span class="line">echo &quot;the result is: $?&quot; # $? 获取 calc 函数返回值</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">#!/usr/bin/env bash
+
+calc()&#123;
+  PS3="choose the oper: "
+  select oper in + - \* / # 生成操作符选择菜单
+  do
+  echo -n "enter first num: " && read x # 读取输入参数
+  echo -n "enter second num: " && read y # 读取输入参数
+  exec
+  case $&#123;oper&#125; in
+    "+")
+      return $(($&#123;x&#125; + $&#123;y&#125;))
+    ;;
+    "-")
+      return $(($&#123;x&#125; - $&#123;y&#125;))
+    ;;
+    "*")
+      return $(($&#123;x&#125; * $&#123;y&#125;))
+    ;;
+    "/")
+      return $(($&#123;x&#125; / $&#123;y&#125;))
+    ;;
+    *)
+      echo "$&#123;oper&#125; is not support!"
+      return 0
+    ;;
+  esac
+  break
+  done
+&#125;
+calc
+echo "the result is: $?" # $? 获取 calc 函数返回值</code></pre>
 <p>执行结果如下</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./function-demo.sh</span></span><br><span class="line">1) +</span><br><span class="line">2) -</span><br><span class="line">3) *</span><br><span class="line">4) /</span><br><span class="line">choose the oper: 3</span><br><span class="line">enter first num: 10</span><br><span class="line">enter second num: 10</span><br><span class="line">the result is: 100</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">$ ./function-demo.sh
+1) +
+2) -
+3) *
+4) /
+choose the oper: 3
+enter first num: 10
+enter second num: 10
+the result is: 100</code></pre>
 <h3 id="流和重定向"><a href="#流和重定向" class="headerlink" title="流和重定向"></a>流和重定向</h3><p>Bash 有很强大的工具来处理程序之间的协同工作。使用流，我们能将一个程序的输出发送到另一个程序或文件，因此，我们能方便地记录日志或做一些其它我们想做的事。</p>
 <p>管道给了我们创建传送带的机会，控制程序的执行成为可能。</p>
 <p>学习如何使用这些强大的、高级的工具是非常非常重要的。</p>
@@ -798,15 +1159,25 @@
 </tr>
 </tbody></table>
 <p>一些简单的重定向的例子</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## ls的结果将会被写到list.txt中</span></span></span><br><span class="line">ls -l &gt; list.txt</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## 将输出附加到list.txt中</span></span></span><br><span class="line">ls -a &gt;&gt; list.txt</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## 所有的错误信息会被写到errors.txt中</span></span></span><br><span class="line">grep da * 2&gt; errors.txt</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment">## 从errors.txt中读取输入</span></span></span><br><span class="line">less &lt; errors.txt</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">### ls的结果将会被写到list.txt中
+ls -l > list.txt
+
+### 将输出附加到list.txt中
+ls -a >> list.txt
+
+### 所有的错误信息会被写到errors.txt中
+grep da * 2> errors.txt
+
+### 从errors.txt中读取输入
+less < errors.txt</code></pre>
 <h4 id="dev-null文件"><a href="#dev-null文件" class="headerlink" title="/dev/null文件"></a><code>/dev/null</code>文件</h4><p>如果希望执行某个命令，但又不希望在屏幕上显示输出结果，那么可以将输出重定向到 /dev/null：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">command</span> &gt; /dev/null</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">$ command > /dev/null</code></pre>
 <p>/dev/null 是一个特殊的文件，写入到它的内容都会被丢弃；如果尝试从该文件读取内容，那么什么也读不到。但是 /dev/null 文件非常有用，将命令的输出重定向到它，会起到”禁止输出”的效果。</p>
 <p>如果希望屏蔽 stdout 和 stderr，可以这样写：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> <span class="built_in">command</span> &gt; /dev/null 2&gt;&amp;1</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">$ command > /dev/null 2>&1</code></pre>
 <h3 id="Debug"><a href="#Debug" class="headerlink" title="Debug"></a>Debug</h3><p>shell 提供了用于 debug 脚本的工具。</p>
 <p>如果想采用 debug 模式运行某脚本，可以在其 shebang 中使用一个特殊的选项：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash options</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">#!/bin/bash options</code></pre>
 <p>options 是一些可以改变 shell 行为的选项。下表是一些可能对你有用的选项：</p>
 <table>
 <thead>
@@ -848,11 +1219,52 @@
 </tr>
 </tbody></table>
 <p>举个例子，如果我们在脚本中指定了<code>-x</code>例如：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash -x</span></span><br><span class="line"></span><br><span class="line">for (( i = 0; i &lt; 3; i++ )); do</span><br><span class="line">  echo $i</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">#!/bin/bash -x
+
+for (( i = 0; i < 3; i++ )); do
+  echo $i
+done</code></pre>
 <p>这会向<code>stdout</code>打印出变量的值和一些其它有用的信息：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ./my_script</span></span><br><span class="line">+ (( i = 0 ))</span><br><span class="line">+ (( i &lt; 3 ))</span><br><span class="line">+ echo 0</span><br><span class="line">0</span><br><span class="line">+ (( i++  ))</span><br><span class="line">+ (( i &lt; 3 ))</span><br><span class="line">+ echo 1</span><br><span class="line">1</span><br><span class="line">+ (( i++  ))</span><br><span class="line">+ (( i &lt; 3 ))</span><br><span class="line">+ echo 2</span><br><span class="line">2</span><br><span class="line">+ (( i++  ))</span><br><span class="line">+ (( i &lt; 3 ))</span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell">$ ./my_script
++ (( i = 0 ))
++ (( i < 3 ))
++ echo 0
+0
++ (( i++  ))
++ (( i < 3 ))
++ echo 1
+1
++ (( i++  ))
++ (( i < 3 ))
++ echo 2
+2
++ (( i++  ))
++ (( i < 3 ))</code></pre>
 <p>有时我们值需要 debug 脚本的一部分。这种情况下，使用<code>set</code>命令会很方便。这个命令可以启用或禁用选项。使用<code>-</code>启用选项，<code>+</code>禁用选项：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 开启 debug</span></span><br><span class="line">set -x</span><br><span class="line">for (( i = 0; i &lt; 3; i++ )); do</span><br><span class="line">  printf $&#123;i&#125;</span><br><span class="line">done</span><br><span class="line"><span class="meta">#</span><span class="bash"> 关闭 debug</span></span><br><span class="line">set +x</span><br><span class="line"><span class="meta">#</span><span class="bash">  Output:</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  + (( i = 0 ))</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  + (( i &lt; 3 ))</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  + <span class="built_in">printf</span> 0</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  0+ (( i++  ))</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  + (( i &lt; 3 ))</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  + <span class="built_in">printf</span> 1</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  1+ (( i++  ))</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  + (( i &lt; 3 ))</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  + <span class="built_in">printf</span> 2</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  2+ (( i++  ))</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  + (( i &lt; 3 ))</span></span><br><span class="line"><span class="meta">#</span><span class="bash">  + <span class="built_in">set</span> +x</span></span><br><span class="line"></span><br><span class="line">for i in &#123;1..5&#125;; do printf $&#123;i&#125;; done</span><br><span class="line">printf &quot;\n&quot;</span><br><span class="line"><span class="meta">#</span><span class="bash">  Output: 12345</span></span><br></pre></td></tr></table></figure>
+<pre class=" language-shell"><code class="language-shell"># 开启 debug
+set -x
+for (( i = 0; i < 3; i++ )); do
+  printf $&#123;i&#125;
+done
+# 关闭 debug
+set +x
+#  Output:
+#  + (( i = 0 ))
+#  + (( i < 3 ))
+#  + printf 0
+#  0+ (( i++  ))
+#  + (( i < 3 ))
+#  + printf 1
+#  1+ (( i++  ))
+#  + (( i < 3 ))
+#  + printf 2
+#  2+ (( i++  ))
+#  + (( i < 3 ))
+#  + set +x
+
+for i in &#123;1..5&#125;; do printf $&#123;i&#125;; done
+printf "\n"
+#  Output: 12345</code></pre>
 
                 
             </div>
@@ -1139,13 +1551,13 @@
                 下一篇&nbsp;<i class="fas fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/09/04/Docker%E7%AC%94%E8%AE%B0/">
+                <a href="/2020/09/19/spring%E7%AC%94%E8%AE%B0/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/20.jpg" class="responsive-img" alt="Docker笔记">
+                        <img src="/medias/featureimages/7.jpg" class="responsive-img" alt="spring笔记">
                         
-                        <span class="card-title">Docker笔记</span>
+                        <span class="card-title">spring笔记</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
@@ -1156,7 +1568,7 @@
                     </div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="far fa-clock fa-fw icon-date"></i>2020-09-04
+                                <i class="far fa-clock fa-fw icon-date"></i>2020-09-19
                             </span>
                         <span class="publish-author">
                             
@@ -1169,8 +1581,8 @@
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/docker/">
-                        <span class="chip bg-color">docker</span>
+                    <a href="/tags/spring/">
+                        <span class="chip bg-color">spring</span>
                     </a>
                     
                 </div>
