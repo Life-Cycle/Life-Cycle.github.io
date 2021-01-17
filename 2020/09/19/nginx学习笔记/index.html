@@ -487,14 +487,124 @@
 </ul>
 </li>
 </ul>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">root@a3638f2e8d19:/etc/nginx# cat nginx.conf</span><br><span class="line"></span><br><span class="line">user  nginx;</span><br><span class="line">worker_processes  1; # 服务器并发处理的关键配置。值越大，表示可以支持的并发处理量越多</span><br><span class="line"></span><br><span class="line">error_log  /var/log/nginx/error.log warn;</span><br><span class="line">pid        /var/run/nginx.pid;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">events &#123;</span><br><span class="line">    worker_connections  1024; # 表示每个worker process支持的最大连接数为1024</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">http &#123;</span><br><span class="line">    include       /etc/nginx/mime.types;</span><br><span class="line">    default_type  application/octet-stream;</span><br><span class="line"></span><br><span class="line">    log_format  main  &#x27;$remote_addr - $remote_user [$time_local] &quot;$request&quot; &#x27;</span><br><span class="line">                      &#x27;$status $body_bytes_sent &quot;$http_referer&quot; &#x27;</span><br><span class="line">                      &#x27;&quot;$http_user_agent&quot; &quot;$http_x_forwarded_for&quot;&#x27;;</span><br><span class="line"></span><br><span class="line">    access_log  /var/log/nginx/access.log  main;</span><br><span class="line"></span><br><span class="line">    sendfile        on;</span><br><span class="line">    #tcp_nopush     on;</span><br><span class="line"></span><br><span class="line">    keepalive_timeout  65;</span><br><span class="line"></span><br><span class="line"><span class="meta">	#</span><span class="bash"> server部分该配置文件中没有，是加上去的</span></span><br><span class="line">	server &#123;</span><br><span class="line">		listen 80; # 监听端口</span><br><span class="line">		server_name localhost; # 主机名称</span><br><span class="line">		 location / &#123; # 匹配路径/</span><br><span class="line">		 	root html;</span><br><span class="line">		 	index index.html index.htm</span><br><span class="line">		 &#125;</span><br><span class="line">	&#125;</span><br><span class="line">	</span><br><span class="line">    #gzip  on;</span><br><span class="line"></span><br><span class="line">    include /etc/nginx/conf.d/*.conf;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">root@a3638f2e8d19:/etc/nginx# cat nginx.conf
+
+user  nginx;
+worker_processes  1; # 服务器并发处理的关键配置。值越大，表示可以支持的并发处理量越多
+
+error_log  /var/log/nginx/error.log warn;
+pid        /var/run/nginx.pid;
+
+
+events &#123;
+    worker_connections  1024; # 表示每个worker process支持的最大连接数为1024
+&#125;
+
+
+http &#123;
+    include       /etc/nginx/mime.types;
+    default_type  application/octet-stream;
+
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile        on;
+    #tcp_nopush     on;
+
+    keepalive_timeout  65;
+
+    # server部分该配置文件中没有，是加上去的
+    server &#123;
+        listen 80; # 监听端口
+        server_name localhost; # 主机名称
+         location / &#123; # 匹配路径/
+             root html;
+             index index.html index.htm
+         &#125;
+    &#125;
+
+    #gzip  on;
+
+    include /etc/nginx/conf.d/*.conf;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="配置nginx代理tomcat"><a href="#配置nginx代理tomcat" class="headerlink" title="配置nginx代理tomcat"></a>配置nginx代理tomcat</h4><p>配置完的效果就是在浏览器上输入<code>www.123.com:32770</code>就可以访问到tomcat的页面。</p>
 <p>首先要修改浏览器客户端的host文件，文件路径为<code>C:\Windows\System32\drivers\etc</code>；<br>然后在docker中启动nginx和tomcat，为了配置方便，将nginx配置文件挂载出来。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 1.修改host文件，在文件中添加如下一行</span></span><br><span class="line">10.108.216.157 www.123.com</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 2.启动nginx容器。需要特别说明的是，不能直接在本地新建nginx.conf文件和conf.d目录然后直接挂在到容器，这样会报错，容器启动后会立即停止，这是因为本地的配置文件为空，同步到容器内部导致容器内的配置文件也为空，容器就无法启动。解决方法就是先启动一个容器不做目录挂载，将这个容器的配置文件拷贝出来，然后在停止并删除这个容器，再重新启动一个容器将文件挂载到刚刚复制出来的配置文件上。</span></span><br><span class="line">root@zxg-1:/home/zfl/nginx_study/conf.d# docker run -d --name nginx_study -p 32770:80 -v /home/zfl/nginx_study/nginx.conf:/etc/nginx/nginx.conf -v /home/zfl/nginx_study/conf.d/default.conf:/etc/nginx/conf.d/default.conf nginx:latest</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 3.查看tomcat的IP地址。可以看到tomcat在内网的地址为172.17.0.5</span></span><br><span class="line">root@zxg-1:/home/zfl/nginx_study/conf.d# docker exec -it 01b7e3cdd0e9 ip addr</span><br><span class="line">1: lo: &lt;LOOPBACK,UP,LOWER_UP&gt; mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000</span><br><span class="line">    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00</span><br><span class="line">    inet 127.0.0.1/8 scope host lo</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line">94: eth0@if95: &lt;BROADCAST,MULTICAST,UP,LOWER_UP&gt; mtu 1500 qdisc noqueue state UP group default</span><br><span class="line">    link/ether 02:42:ac:11:00:05 brd ff:ff:ff:ff:ff:ff link-netnsid 0</span><br><span class="line">    inet 172.17.0.5/16 brd 172.17.255.255 scope global eth0</span><br><span class="line">       valid_lft forever preferred_lft forever</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 4.修改配置文件。在nginx配置小节中看到的nginx.conf文件末尾的include /etc/nginx/conf.d/*.conf;这是说把http中的server块单独抽取出来放到conf.d目录下了，该目录下有default.conf修改这个配置就可以了。</span></span><br><span class="line">root@zxg-1:/home/zfl/nginx_study/conf.d# cat default.conf</span><br><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    listen  [::]:80;</span><br><span class="line">    server_name  localhost;</span><br><span class="line"></span><br><span class="line">    #charset koi8-r;</span><br><span class="line">    #access_log  /var/log/nginx/host.access.log  main;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 主要修改的就是这个地方，这里需要注意的是proxy_pass的地址，不要像视频里面所说的配置为127.0.0.1:8080</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 因为每个容器都相当于一个独立的物理机，127.0.0.1将会在容器内部循环，所以会一直报错500</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 每运行一个容器，docker0网卡都会分配一个ip地址，一般是172.17.xx.xx，需要将IP配置为它。</span></span><br><span class="line">    location / &#123;</span><br><span class="line">        root   /usr/share/nginx/html;</span><br><span class="line">        proxy_pass http://172.17.0.5:8080;</span><br><span class="line">        index  index.html index.htm;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    #error_page  404              /404.html;</span><br><span class="line"></span><br><span class="line">    # redirect server error pages to the static page /50x.html</span><br><span class="line">    #</span><br><span class="line">    error_page   500 502 503 504  /50x.html;</span><br><span class="line">    location = /50x.html &#123;</span><br><span class="line">        root   /usr/share/nginx/html;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 5.访问http://www.123.com:32770/</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell"># 1.修改host文件，在文件中添加如下一行
+10.108.216.157 www.123.com
+
+# 2.启动nginx容器。需要特别说明的是，不能直接在本地新建nginx.conf文件和conf.d目录然后直接挂在到容器，这样会报错，容器启动后会立即停止，这是因为本地的配置文件为空，同步到容器内部导致容器内的配置文件也为空，容器就无法启动。解决方法就是先启动一个容器不做目录挂载，将这个容器的配置文件拷贝出来，然后在停止并删除这个容器，再重新启动一个容器将文件挂载到刚刚复制出来的配置文件上。
+root@zxg-1:/home/zfl/nginx_study/conf.d# docker run -d --name nginx_study -p 32770:80 -v /home/zfl/nginx_study/nginx.conf:/etc/nginx/nginx.conf -v /home/zfl/nginx_study/conf.d/default.conf:/etc/nginx/conf.d/default.conf nginx:latest
+
+# 3.查看tomcat的IP地址。可以看到tomcat在内网的地址为172.17.0.5
+root@zxg-1:/home/zfl/nginx_study/conf.d# docker exec -it 01b7e3cdd0e9 ip addr
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+94: eth0@if95: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
+    link/ether 02:42:ac:11:00:05 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.5/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+
+# 4.修改配置文件。在nginx配置小节中看到的nginx.conf文件末尾的include /etc/nginx/conf.d/*.conf;这是说把http中的server块单独抽取出来放到conf.d目录下了，该目录下有default.conf修改这个配置就可以了。
+root@zxg-1:/home/zfl/nginx_study/conf.d# cat default.conf
+server &#123;
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+# 主要修改的就是这个地方，这里需要注意的是proxy_pass的地址，不要像视频里面所说的配置为127.0.0.1:8080
+# 因为每个容器都相当于一个独立的物理机，127.0.0.1将会在容器内部循环，所以会一直报错500
+# 每运行一个容器，docker0网卡都会分配一个ip地址，一般是172.17.xx.xx，需要将IP配置为它。
+    location / &#123;
+        root   /usr/share/nginx/html;
+        proxy_pass http://172.17.0.5:8080;
+        index  index.html index.htm;
+    &#125;
+
+    #error_page  404              /404.html;
+
+    # redirect server error pages to the static page /50x.html
+    #
+    error_page   500 502 503 504  /50x.html;
+    location = /50x.html &#123;
+        root   /usr/share/nginx/html;
+    &#125;
+&#125;
+
+# 5.访问http://www.123.com:32770/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="配置代理多个服务"><a href="#配置代理多个服务" class="headerlink" title="配置代理多个服务"></a>配置代理多个服务</h4><p>测试2，监听相同端口，不同的路径匹配到不同的服务中去</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    listen  [::]:80;</span><br><span class="line">    server_name  localhost;</span><br><span class="line"></span><br><span class="line">    #charset koi8-r;</span><br><span class="line">    #access_log  /var/log/nginx/host.access.log  main;</span><br><span class="line"></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 用户访问http://www.123.com:32770/edu/xxx则会转发到到8080端口下</span></span><br><span class="line">    location ~ /edu/ &#123;</span><br><span class="line">        proxy_pass http://172.17.0.5:8080;</span><br><span class="line">    &#125;</span><br><span class="line">    </span><br><span class="line">    # 用户访问http://www.123.com:32770/vod/xxx则会转发到到8081端口下</span><br><span class="line">    location ~ /vod/ &#123;</span><br><span class="line">        proxy_pass http://172.17.0.5:8081;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">且枯燥 还有谁 Hello world! 十七张牌你能秒我？ ∵∴∵∴∵∴∵</span><br><span class="line">索尼  (●—●)</span><br><span class="line">八面都不跪，NB！</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">server &#123;
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost;
+
+    #charset koi8-r;
+    #access_log  /var/log/nginx/host.access.log  main;
+
+    # 用户访问http://www.123.com:32770/edu/xxx则会转发到到8080端口下
+    location ~ /edu/ &#123;
+        proxy_pass http://172.17.0.5:8080;
+    &#125;
+
+    # 用户访问http://www.123.com:32770/vod/xxx则会转发到到8081端口下
+    location ~ /vod/ &#123;
+        proxy_pass http://172.17.0.5:8081;
+    &#125;
+&#125;
+且枯燥 还有谁 Hello world! 十七张牌你能秒我？ ∵∴∵∴∵∴∵
+索尼  (●—●)
+八面都不跪，NB！<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="location指令说明"><a href="#location指令说明" class="headerlink" title="location指令说明"></a>location指令说明</h4><p>该指令用于匹配URL，语法如下：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">location [=, ~ , ~* , ^~] /edu/ &#123;</span><br><span class="line">	...</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">location [=, ~ , ~* , ^~] /edu/ &#123;
+    ...
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
 <ol>
 <li><code>=</code>: 用于不含正则表达式的uri前，要求请求字符串与uri严格匹配，如果匹配成功，就停止继续向下搜索并立即处理该请求</li>
 <li><code>~</code>: 用于表示uri包含正则表达式，并且区分大小写</li>
@@ -503,37 +613,129 @@
 </ol>
 <p>注意: 如果uri包含正则表达式，则必须要有<del>或者</del>*标识。</p>
 <h3 id="负载均衡"><a href="#负载均衡" class="headerlink" title="负载均衡"></a>负载均衡</h3><h4 id="配置负载均衡"><a href="#配置负载均衡" class="headerlink" title="配置负载均衡"></a>配置负载均衡</h4><p>配置负载均衡实现访问<code>http://www.123.com/edu/a.html</code>能够分别访问到8080和8081的tomcat服务。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">server &#123;</span><br><span class="line">    listen       80;</span><br><span class="line">    listen  [::]:80;</span><br><span class="line">    server_name  localhost;</span><br><span class="line"></span><br><span class="line"><span class="meta">	#</span><span class="bash"> 1.配置upstream，取别名为myserver</span></span><br><span class="line">	upstream myserver &#123;</span><br><span class="line">		server 172.17.0.5:8080;</span><br><span class="line">		server 172.17.0.5:8081;</span><br><span class="line">	&#125;</span><br><span class="line"><span class="meta">	#</span><span class="bash"> 2.配置转发请求到myserver</span></span><br><span class="line">    location / &#123;</span><br><span class="line">        proxy_pass http://myserver;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">server &#123;
+    listen       80;
+    listen  [::]:80;
+    server_name  localhost;
+
+    # 1.配置upstream，取别名为myserver
+    upstream myserver &#123;
+        server 172.17.0.5:8080;
+        server 172.17.0.5:8081;
+    &#125;
+    # 2.配置转发请求到myserver
+    location / &#123;
+        proxy_pass http://myserver;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="负载均衡策略"><a href="#负载均衡策略" class="headerlink" title="负载均衡策略"></a>负载均衡策略</h4><p>很多专业的负载均衡硬件提供了很好的功能，但是价格不菲，这使得负载均衡软件大受欢迎。在linux下有Nginx、LVS、 Haproxy 等等服务可以提供负载均衡服务，而且Nginx提供了几种分配方式(策略):</p>
 <ol>
 <li><p>轮询(默认)：每个请求按时间顺序逐一分配到不 同的后端服务器，如果后端服务器down掉，能自动剔除。</p>
 </li>
 <li><p>weight(权重)：weight代表权重默认为1,权重越高被分配的客户端越多。<br>指定轮询几率，weight和访问比率成正比，用于后端服务器性能不均的情况。例如: </p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">upstream myserver &#123;</span><br><span class="line">	server 172.17.0.5:8080 weight=5;</span><br><span class="line">	server 172.17.0.5:8081 weight=10;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<pre class="line-numbers language-shell"><code class="language-shell">upstream myserver &#123;
+    server 172.17.0.5:8080 weight=5;
+    server 172.17.0.5:8081 weight=10;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
 <li><p>ip hash：每个请求按访问ip的hash结果分配, 这样每个访客固定访问一个后端服务器,可以解诀session的问题。例如:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">upstream server pool&#123;</span><br><span class="line">  ip_ hash</span><br><span class="line">  server 192.168.5.21:80</span><br><span class="line">  server 192.168.5.22:80</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></li>
+<pre class="line-numbers language-shell"><code class="language-shell">upstream server pool&#123;
+  ip_ hash
+  server 192.168.5.21:80
+  server 192.168.5.22:80
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
 <li><p>fair (第三方)：按后端服务器的响应时间来分配请求，响应时间短的优先分配</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">upstream server_pool </span><br><span class="line">	server 192.168.5.21:80;</span><br><span class="line">	server 192.168.5.22:80;</span><br><span class="line">	fair;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<h3 id="配置动静分离"><a href="#配置动静分离" class="headerlink" title="配置动静分离"></a>配置动静分离</h3></li>
+<pre class="line-numbers language-shell"><code class="language-shell">upstream server_pool 
+    server 192.168.5.21:80;
+    server 192.168.5.22:80;
+    fair;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
 </ol>
-<p>动静分离简单来说就是把动态跟静态请求分开。不能理解成只是单独把动态页面和静态页面物理分离。严格意义上来说应该是把动态请求跟静态请求分开，可以理解成使用nginx处理静态页面，tomcat处理动态页面。动静分离从目前实现角度来讲大致分为两种：</p>
+<h3 id="配置动静分离"><a href="#配置动静分离" class="headerlink" title="配置动静分离"></a>配置动静分离</h3><p>动静分离简单来说就是把动态跟静态请求分开。不能理解成只是单独把动态页面和静态页面物理分离。严格意义上来说应该是把动态请求跟静态请求分开，可以理解成使用nginx处理静态页面，tomcat处理动态页面。动静分离从目前实现角度来讲大致分为两种：</p>
 <p>一种是纯粹把静态文件独立成单独的域名，放在独立服务器上，也是目前主流推崇的方案；<br>另一种是吧动态跟静态文件混合在一起发布，通过nginx来分开。</p>
 <p>通过location指定不同的后缀名实现不同的请求转发。通过expires参数设置，可以使浏览器缓存过期时间，减少与服务器之前的请求和流量。具体Expires定义: 是给一个资源设定一个过期时间，也就是说无需去服务端验证，直接通过浏览器自身确认是否过期即可，所以不会产生额外的流量。此种方法非常适合不经常变动的资源。(如果经常更新的文件，不建议使用Expires来缓存)，如果设置3d, 表示在这3天之内访问这个URL, 发送一个请求，比对服务器该文件最后更新时间没有变化，则不会从服务器抓取，返回状态码304，如果有修改，则直接从服务器重新下载，返回状态码200。</p>
 <p><img src="https://nishigouzi.github.io/2020/06/07/Nginx%E7%AC%94%E8%AE%B0/image-20200607153752466.png" alt="img"></p>
 <h4 id="实例"><a href="#实例" class="headerlink" title="实例"></a>实例</h4><p>在tomcat中webapps目录下新建<code>/data/image</code>和<code>/data/www</code>两个文件夹，然后在image目录里面放静态图片，在www目录里面放动态网页。当访问图片的时候直接返回图片，访问网页的时候转到网页，实现动静分离。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> nginx中配置如下</span></span><br><span class="line">location /www/ &#123;</span><br><span class="line">	root /data/;</span><br><span class="line">	index index.html index.htm;</span><br><span class="line">&#125;</span><br><span class="line">location /image/ &#123;</span><br><span class="line">	root /data/;</span><br><span class="line">	autoindex on;</span><br><span class="line">&#125;</span><br><span class="line"><span class="meta">#</span><span class="bash"> 实际测试分别访问一下两个地址，其中访问图片，如果路径问/image/则会列出图片列表</span></span><br><span class="line">http://192.168.1.112/www/index.html</span><br><span class="line">http://192.168.1.112/image/1.jpg</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell"># nginx中配置如下
+location /www/ &#123;
+    root /data/;
+    index index.html index.htm;
+&#125;
+location /image/ &#123;
+    root /data/;
+    autoindex on;
+&#125;
+# 实际测试分别访问一下两个地址，其中访问图片，如果路径问/image/则会列出图片列表
+http://192.168.1.112/www/index.html
+http://192.168.1.112/image/1.jpg<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="配置高可用"><a href="#配置高可用" class="headerlink" title="配置高可用"></a>配置高可用</h3><p>需要两台nginx服务器，并且都需要运行keepalived，需要虚拟ip(在Keepalived里面可以配置虚拟ip)</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> keepalived配置Keepalived.conf</span></span><br><span class="line">global_defs &#123;</span><br><span class="line">	notification_email &#123;</span><br><span class="line">	  acassen@firewall.loc</span><br><span class="line">	  failover@firewall.loc</span><br><span class="line">	  sysadmin@firewall.loc</span><br><span class="line">	&#125;</span><br><span class="line">	notification_email_from Alexandre.Cassen@firewall.loc</span><br><span class="line">	smtp_ server 192.168.17.129</span><br><span class="line">	smtp_connect_timeout 30</span><br><span class="line">	router_id LVS_DEVEL	# LVS_DEVEL这字段在/etc/hosts文件中看；通过它访问到主机</span><br><span class="line">&#125;</span><br><span class="line">vrrp_script chk_http_ port &#123;</span><br><span class="line">	script &quot;/usr/local/src/nginx_check.sh&quot;</span><br><span class="line">	interval 2   # (检测脚本执行的间隔)2s</span><br><span class="line">	weight 2  #权重，如果这个脚本检测为真，服务器权重+2</span><br><span class="line">&#125;</span><br><span class="line">vrrp_instance VI_1 &#123;</span><br><span class="line">	state BACKUP   # 备份服务器上将MASTER 改为BACKUP</span><br><span class="line">	interface ens33 //网卡名称</span><br><span class="line">	virtual_router_id 51 # 主、备机的virtual_router_id必须相同</span><br><span class="line">	priority 100   #主、备机取不同的优先级，主机值较大，备份机值较小</span><br><span class="line">	advert_int 1	#每隔1s发送一次心跳</span><br><span class="line">	authentication &#123;	# 校验方式， 类型是密码，密码1111</span><br><span class="line">        auth type PASS</span><br><span class="line">        auth pass 1111</span><br><span class="line">    &#125;</span><br><span class="line">	virtual_ipaddress &#123; # 虛拟ip</span><br><span class="line">		192.168.17.50 // VRRP H虛拟ip地址</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在路径/usr/<span class="built_in">local</span>/src/ 下新建检测脚本 nginx_check.sh</span></span><br><span class="line"><span class="meta">#</span><span class="bash">! /bin/bash</span></span><br><span class="line">A=`ps -C nginx -no-header | wc - 1`</span><br><span class="line">if [ $A -eq 0];then</span><br><span class="line">	/usr/local/nginx/sbin/nginx</span><br><span class="line">	sleep 2</span><br><span class="line">	if [`ps -C nginx --no-header| wc -1` -eq 0 ];then</span><br><span class="line">		killall keepalived</span><br><span class="line">	fi</span><br><span class="line">fi</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> 在两台服务器上启动nginx和Keepalived</span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 会发现在浏览器地址栏输入192.168.17.50可以访问到nginx页面，如果这时候一台服务器挂掉，另外一台备用机会自动顶上去。</span></span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell"># keepalived配置Keepalived.conf
+global_defs &#123;
+    notification_email &#123;
+      acassen@firewall.loc
+      failover@firewall.loc
+      sysadmin@firewall.loc
+    &#125;
+    notification_email_from Alexandre.Cassen@firewall.loc
+    smtp_ server 192.168.17.129
+    smtp_connect_timeout 30
+    router_id LVS_DEVEL    # LVS_DEVEL这字段在/etc/hosts文件中看；通过它访问到主机
+&#125;
+vrrp_script chk_http_ port &#123;
+    script "/usr/local/src/nginx_check.sh"
+    interval 2   # (检测脚本执行的间隔)2s
+    weight 2  #权重，如果这个脚本检测为真，服务器权重+2
+&#125;
+vrrp_instance VI_1 &#123;
+    state BACKUP   # 备份服务器上将MASTER 改为BACKUP
+    interface ens33 //网卡名称
+    virtual_router_id 51 # 主、备机的virtual_router_id必须相同
+    priority 100   #主、备机取不同的优先级，主机值较大，备份机值较小
+    advert_int 1    #每隔1s发送一次心跳
+    authentication &#123;    # 校验方式， 类型是密码，密码1111
+        auth type PASS
+        auth pass 1111
+    &#125;
+    virtual_ipaddress &#123; # 虛拟ip
+        192.168.17.50 // VRRP H虛拟ip地址
+    &#125;
+&#125;
 
+# 在路径/usr/local/src/ 下新建检测脚本 nginx_check.sh
+#! /bin/bash
+A=`ps -C nginx -no-header | wc - 1`
+if [ $A -eq 0];then
+    /usr/local/nginx/sbin/nginx
+    sleep 2
+    if [`ps -C nginx --no-header| wc -1` -eq 0 ];then
+        killall keepalived
+    fi
+fi
 
+# 在两台服务器上启动nginx和Keepalived
+# 会发现在浏览器地址栏输入192.168.17.50可以访问到nginx页面，如果这时候一台服务器挂掉，另外一台备用机会自动顶上去。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h3 id="nginx原理"><a href="#nginx原理" class="headerlink" title="nginx原理"></a>nginx原理</h3><p><img src="https://nishigouzi.github.io/2020/06/07/Nginx%E7%AC%94%E8%AE%B0/image-20200607222133869.png" alt="img"></p>
 <h4 id="一个master多个worker的好处"><a href="#一个master多个worker的好处" class="headerlink" title="一个master多个worker的好处"></a>一个master多个worker的好处</h4><p>可以使用<code>nginx -s reload</code>热部署。</p>
 <p>首先，对于每个worker进程来说，独立的进程，不需要加锁，所以省掉了锁带来的开销，同时在编程以及问题查找时，也会方便很多。其次,采用独立的进程，可以让互相之间不会影响，一个进程退出后，其它进程还在工作，服务不会中断，master进程则很快启动新的worker进程。当然，worker进程的异常退出，肯定是程序有bug了，异常退出，会导致当前worker.上的所有请求失败，不过不会影响到所有请求，所以降低了风险。</p>
 <h4 id="设置多少个worker合适"><a href="#设置多少个worker合适" class="headerlink" title="设置多少个worker合适"></a>设置多少个worker合适</h4><p>Nginx同redis类似都采用了io多路复用机制，每个worker都是一个独立的进程， 但每个进程里只有一个主线程，通过异步非阻塞的方式来处理请求，即使是成千上万个请求也不在话下。每个worker的线程可以把一个cpu的性能发挥到极致。所以<strong>worker数和服务器的cpu数相等是最为适宜的</strong>。设少了会浪费cpu,设多了会造成cpu频繁切换上下文带来的损耗。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 设置worker数量</span></span><br><span class="line">worker.processes 4 </span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> work绑定cpu(4work绑定4cpu)</span></span><br><span class="line">worker_cpu_affinity 0001 0010 0100 1000</span><br><span class="line"></span><br><span class="line"><span class="meta">#</span><span class="bash"> work绑定cpu (4work绑定8cpu中的4个)</span></span><br><span class="line">worker_cpu_affinity 0000001 00000010 00000100 00001000</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell"># 设置worker数量
+worker.processes 4 
+
+# work绑定cpu(4work绑定4cpu)
+worker_cpu_affinity 0001 0010 0100 1000
+
+# work绑定cpu (4work绑定8cpu中的4个)
+worker_cpu_affinity 0000001 00000010 00000100 00001000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="worker连接数"><a href="#worker连接数" class="headerlink" title="worker连接数"></a>worker连接数</h4><p>work_connections，这个值表示每个worker进程所能建立连接的最大值，所以，一个nginx 能建立的最大连接数，应该是worker.connections * worker processes。当然，这里说的是最大连接数，对于HTTP 请求本地资源来说，能够支持的最大并发数量是worker.connections * worker processes,如果是支持http1.1的浏览器每次访问要占两个连接，所以普通的静态访问最大并发数是: worker.connections * worker.processes / 2, 而如果是HTTP作为反向代理来说，最大并发数量应该是worker.connections * worker_proceses/4. 因为作为反向代理服务器，每个并发会建立与客户端的连接和与后端服务的连接，会占用两个连接.</p>
 <p>几个常见问题：</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">第一个: 发送请求，占用了woker的几个连接数?</span><br><span class="line">答案: 2或者4个。</span><br><span class="line"></span><br><span class="line">第二个: nginx有一个master,有四个woker,每个woker支持最大的连接数1024,支持的最大并发数是多少?</span><br><span class="line">答案：普通的静态访问最大并发数是: worker connections * worker processes /2，</span><br><span class="line">而如果是HTTP作为反向代理来说，最大并发数量应该是worker connections * worker processes/4</span><br></pre></td></tr></table></figure>
+<pre class="line-numbers language-shell"><code class="language-shell">第一个: 发送请求，占用了woker的几个连接数?
+答案: 2或者4个。
+
+第二个: nginx有一个master,有四个woker,每个woker支持最大的连接数1024,支持的最大并发数是多少?
+答案：普通的静态访问最大并发数是: worker connections * worker processes /2，
+而如果是HTTP作为反向代理来说，最大并发数量应该是worker connections * worker processes/4<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
                 
             </div>

@@ -523,7 +523,16 @@
 </li>
 </ol>
 <p>示例，对时间进行URL编码：(<code>&quot;yyyy年MM月dd日 HH:mm:ss&quot;</code>中有个空格，Tomcat不能存储，所以需要进行URL编码)</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Date date &#x3D; new Date();</span><br><span class="line">SimpleDateFormat sdf &#x3D; new SimpleDateFormat(&quot;yyyy年MM月dd日 HH:mm:ss&quot;);</span><br><span class="line">String str &#x3D; sdf.format(date);</span><br><span class="line">&#x2F;&#x2F;使用URLEncoder的静态方法encode编码</span><br><span class="line">str &#x3D; URLEncoder.encode(str, &quot;utf-8&quot;)</span><br><span class="line">cookie.setValue(str);</span><br><span class="line"></span><br><span class="line">&#x2F;&#x2F;使用URLDecoder的静态方法decode进行解码</span><br><span class="line">str &#x3D; URLDecoder.decode(str, &quot;utf-8&quot;)</span><br></pre></td></tr></table></figure></li>
+<pre><code>Date date = new Date();
+SimpleDateFormat sdf = new SimpleDateFormat(&quot;yyyy年MM月dd日 HH:mm:ss&quot;);
+String str = sdf.format(date);
+//使用URLEncoder的静态方法encode编码
+str = URLEncoder.encode(str, &quot;utf-8&quot;)
+cookie.setValue(str);
+
+//使用URLDecoder的静态方法decode进行解码
+str = URLDecoder.decode(str, &quot;utf-8&quot;)</code></pre>
+</li>
 <li><p>cookie共享的问题</p>
 <ol>
 <li><p>同一个Tomcat服务器中，部署了多个web项目，在这些web项目之间实现共享</p>
@@ -568,7 +577,10 @@
 <li><p>默认情况下：不是</p>
 </li>
 <li><p>如果需要相同，则可以创建一个Cookie，然后设置一个名为<code>JSEESIONID</code>属性，值就是这个session的id，然后设置cookie的存活时间即可。</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Cookie cookie &#x3D; new Cookie(&quot;JESESSIONID&quot;, session.getId());</span><br><span class="line">cookie.setMaxAge(60*60);</span><br><span class="line">response.addCookie(cookie);</span><br></pre></td></tr></table></figure></li>
+<pre><code>Cookie cookie = new Cookie(&quot;JESESSIONID&quot;, session.getId());
+cookie.setMaxAge(60*60);
+response.addCookie(cookie);</code></pre>
+</li>
 </ul>
 </li>
 <li><p>客户端不关闭，服务端关闭，两次获取的session是否为同一个？</p>
@@ -718,7 +730,15 @@
 </li>
 </ul>
 <h4 id="请求数据格式"><a href="#请求数据格式" class="headerlink" title="请求数据格式"></a>请求数据格式</h4><p>先贴一个GET请求的Request Header如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;decode HTTP&#x2F;1.1</span><br><span class="line">Host: 47.95.206.210:8080</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Cache-Control: max-age&#x3D;0</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit&#x2F;537.36 (KHTML, like Gecko) Chrome&#x2F;81.0.4044.138 Safari&#x2F;537.36</span><br><span class="line">Accept: text&#x2F;html,application&#x2F;xhtml+xml,application&#x2F;xml;q&#x3D;0.9,image&#x2F;webp,image&#x2F;apng,*&#x2F;*;q&#x3D;0.8,application&#x2F;signed-exchange;v&#x3D;b3;q&#x3D;0.9</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Accept-Language: zh-CN,zh;q&#x3D;0.9,en-GB;q&#x3D;0.8,en;q&#x3D;0.7</span><br></pre></td></tr></table></figure>
+<pre><code>GET /decode HTTP/1.1
+Host: 47.95.206.210:8080
+Connection: keep-alive
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9,en-GB;q=0.8,en;q=0.7</code></pre>
 <ol>
 <li><p>请求行</p>
 <p>格式：<code>请求方式 请求URL 请求协议/版本 </code>，上例中，请求行就是<code>GET /decode HTTP/1.1</code>。</p>
@@ -726,7 +746,8 @@
 <li><p>请求方式：HTTP协议有7中请求方式，常用的有2种，GET请求和POST请求。</p>
 <ul>
 <li><p>GET请求：请求参数在请求行中，在url后用问号间隔。例如：<br>请求<code>http://47.95.206.210:8080/decode?username=zhangsan</code>的Request Header部分如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">GET &#x2F;decode?username&#x3D;zhangsan HTTP&#x2F;1.1</span><br><span class="line">Host: 47.95.206.210:8080</span><br></pre></td></tr></table></figure>
+<pre><code>GET /decode?username=zhangsan HTTP/1.1
+Host: 47.95.206.210:8080</code></pre>
 <p>GET请求特点：请求url长度有限制，不太安全，请求参数在请求行中。</p>
 </li>
 <li><p>POST请求：请求参数在请求体中，请求的url长度没有限制，相对安全。</p>
@@ -738,7 +759,14 @@
 <li><p>请求头</p>
 <p>就是键值对，键和值用冒号空格隔开，格式<code>请求头名称: 请求头值</code></p>
 <p>以下是一个请求头的示例：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Host: 47.95.206.210:8080</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Cache-Control: max-age&#x3D;0</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit&#x2F;537.36 (KHTML, like Gecko) Chrome&#x2F;81.0.4044.138 Safari&#x2F;537.36</span><br><span class="line">Accept: text&#x2F;html,application&#x2F;xhtml+xml,application&#x2F;xml;q&#x3D;0.9,image&#x2F;webp,image&#x2F;apng,*&#x2F;*;q&#x3D;0.8,application&#x2F;signed-exchange;v&#x3D;b3;q&#x3D;0.9</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Accept-Language: zh-CN,zh;q&#x3D;0.9,en-GB;q&#x3D;0.8,en;q&#x3D;0.7</span><br></pre></td></tr></table></figure>
+<pre><code>Host: 47.95.206.210:8080
+Connection: keep-alive
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9,en-GB;q=0.8,en;q=0.7</code></pre>
 <p>常见请求头：</p>
 <ul>
 <li>Host：请求主机。</li>
@@ -754,11 +782,28 @@
 </li>
 <li><p>请求体</p>
 <p>Get请求方式是没有请求体的，POST方式有，以下是一个post请求的示例：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">POST &#x2F;decodeImg HTTP&#x2F;1.1</span><br><span class="line">Host: 47.95.206.210:8080</span><br><span class="line">Connection: keep-alive</span><br><span class="line">Content-Length: 202377</span><br><span class="line">Cache-Control: max-age&#x3D;0</span><br><span class="line">Upgrade-Insecure-Requests: 1</span><br><span class="line">Origin: http:&#x2F;&#x2F;47.95.206.210:8080</span><br><span class="line">Content-Type: multipart&#x2F;form-data; boundary&#x3D;----WebKitFormBoundaryZTLjs9rFZ12CjCrP</span><br><span class="line">User-Agent: Mozilla&#x2F;5.0 (Windows NT 10.0; Win64; x64) AppleWebKit&#x2F;537.36 (KHTML, like Gecko) Chrome&#x2F;81.0.4044.138 Safari&#x2F;537.36</span><br><span class="line">Accept: text&#x2F;html,application&#x2F;xhtml+xml,application&#x2F;xml;q&#x3D;0.9,image&#x2F;webp,image&#x2F;apng,*&#x2F;*;q&#x3D;0.8,application&#x2F;signed-exchange;v&#x3D;b3;q&#x3D;0.9</span><br><span class="line">Referer: http:&#x2F;&#x2F;47.95.206.210:8080&#x2F;decode</span><br><span class="line">Accept-Encoding: gzip, deflate</span><br><span class="line">Accept-Language: zh-CN,zh;q&#x3D;0.9,en-GB;q&#x3D;0.8,en;q&#x3D;0.7</span><br></pre></td></tr></table></figure>
-<h4 id="响应消息格式"><a href="#响应消息格式" class="headerlink" title="响应消息格式"></a>响应消息格式</h4></li>
+<pre><code>POST /decodeImg HTTP/1.1
+Host: 47.95.206.210:8080
+Connection: keep-alive
+Content-Length: 202377
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+Origin: http://47.95.206.210:8080
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryZTLjs9rFZ12CjCrP
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
+Referer: http://47.95.206.210:8080/decode
+Accept-Encoding: gzip, deflate
+Accept-Language: zh-CN,zh;q=0.9,en-GB;q=0.8,en;q=0.7</code></pre>
+</li>
 </ol>
-<p>先贴一个响应Response Header如下：</p>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">HTTP&#x2F;1.1 200</span><br><span class="line">Content-Type: application&#x2F;json;charset&#x3D;UTF-8</span><br><span class="line">Content-Length: 118</span><br><span class="line">Date: Wed, 01 Jul 2020 05:35:29 GMT</span><br><span class="line">Keep-Alive: timeout&#x3D;60</span><br><span class="line">Connection: keep-alive</span><br></pre></td></tr></table></figure>
+<h4 id="响应消息格式"><a href="#响应消息格式" class="headerlink" title="响应消息格式"></a>响应消息格式</h4><p>先贴一个响应Response Header如下：</p>
+<pre><code>HTTP/1.1 200
+Content-Type: application/json;charset=UTF-8
+Content-Length: 118
+Date: Wed, 01 Jul 2020 05:35:29 GMT
+Keep-Alive: timeout=60
+Connection: keep-alive</code></pre>
 <ol>
 <li><p>响应行</p>
 <p>格式：<code>协议/版本 响应状态码 状态码描述</code>，上面响应中，响应行就是<code>HTTP/1.1 200</code></p>
@@ -791,16 +836,94 @@
 <h3 id="Httpclient"><a href="#Httpclient" class="headerlink" title="Httpclient"></a>Httpclient</h3><p>httpclient是一个java的网络请求包。<a target="_blank" rel="noopener" href="http://hc.apache.org/httpcomponents-client-ga/tutorial/html/fundamentals.html#d5e43">httpclient官方文档链接</a></p>
 <h4 id="httpclient模拟表单提交"><a href="#httpclient模拟表单提交" class="headerlink" title="httpclient模拟表单提交"></a>httpclient模拟表单提交</h4><ol>
 <li><p>httpclient 提供了一个类<code>UrlEncodedFormEntity</code>来用来做表单提交</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">List&lt;NameValuePair&gt; formparams = <span class="keyword">new</span> ArrayList&lt;NameValuePair&gt;();</span><br><span class="line">formparams.add(<span class="keyword">new</span> BasicNameValuePair(<span class="string">&quot;param1&quot;</span>, <span class="string">&quot;value1&quot;</span>));</span><br><span class="line">formparams.add(<span class="keyword">new</span> BasicNameValuePair(<span class="string">&quot;param2&quot;</span>, <span class="string">&quot;value2&quot;</span>));</span><br><span class="line">UrlEncodedFormEntity entity = <span class="keyword">new</span> UrlEncodedFormEntity(formparams, Consts.UTF_8);</span><br><span class="line">HttpPost httppost = <span class="keyword">new</span> HttpPost(<span class="string">&quot;http://localhost/handler.do&quot;</span>);</span><br><span class="line">httppost.setEntity(entity);</span><br></pre></td></tr></table></figure></li>
+<pre class="line-numbers language-java"><code class="language-java">List<span class="token operator">&lt;</span>NameValuePair<span class="token operator">></span> formparams <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span>NameValuePair<span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+formparams<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BasicNameValuePair</span><span class="token punctuation">(</span><span class="token string">"param1"</span><span class="token punctuation">,</span> <span class="token string">"value1"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+formparams<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BasicNameValuePair</span><span class="token punctuation">(</span><span class="token string">"param2"</span><span class="token punctuation">,</span> <span class="token string">"value2"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+UrlEncodedFormEntity entity <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">UrlEncodedFormEntity</span><span class="token punctuation">(</span>formparams<span class="token punctuation">,</span> Consts<span class="token punctuation">.</span>UTF_8<span class="token punctuation">)</span><span class="token punctuation">;</span>
+HttpPost httppost <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HttpPost</span><span class="token punctuation">(</span><span class="token string">"http://localhost/handler.do"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+httppost<span class="token punctuation">.</span><span class="token function">setEntity</span><span class="token punctuation">(</span>entity<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
 <li><p>实际应用中，更多用的是<code>MultipartEntityBuilder</code>，示例如下：</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">MultipartEntityBuilder builder = MultipartEntityBuilder.create();</span><br><span class="line">builder.addBinaryBody(<span class="string">&quot;file&quot;</span>, <span class="keyword">new</span> File(filePath));</span><br><span class="line">ContentType contentType = ContentType.create(<span class="string">&quot;application/jso&quot;</span>,Charset.forName(<span class="string">&quot;UTF-8&quot;</span>));</span><br><span class="line">builder.addTextBody(<span class="string">&quot;param1&quot;</span>, <span class="string">&quot;10101&quot;</span>, contentType);</span><br><span class="line">builder.addTextBody(<span class="string">&quot;param1&quot;</span>, <span class="string">&quot;20202&quot;</span>, contentType);</span><br><span class="line">HttpPost httppost = <span class="keyword">new</span> HttpPost(<span class="string">&quot;http://localhost/handler.do&quot;</span>);</span><br><span class="line">httppost.setEntity(builder.build());</span><br><span class="line"><span class="comment">//执行post请求，并处理返回结果</span></span><br><span class="line">CloseableHttpClient httpClient = HttpClients.createDefault();</span><br><span class="line">CloseableHttpResponse response = httpClient.execute(httpPost);</span><br><span class="line">System.out.println(<span class="string">&quot;返回请求行：&quot;</span>+response.getStatusLine());</span><br><span class="line">HttpEntity responseEntity = response.getEntity();</span><br><span class="line">String s = EntityUtils.toString(responseEntity, <span class="string">&quot;utf-8&quot;</span>);</span><br><span class="line">System.out.println(<span class="string">&quot;最后结果：&quot;</span>+s);</span><br><span class="line">response.close();</span><br></pre></td></tr></table></figure>
-<h4 id="定制httpclient"><a href="#定制httpclient" class="headerlink" title="定制httpclient"></a>定制httpclient</h4></li>
+<pre class="line-numbers language-java"><code class="language-java">MultipartEntityBuilder builder <span class="token operator">=</span> MultipartEntityBuilder<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span><span class="token function">addBinaryBody</span><span class="token punctuation">(</span><span class="token string">"file"</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">File</span><span class="token punctuation">(</span>filePath<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ContentType contentType <span class="token operator">=</span> ContentType<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span><span class="token string">"application/jso"</span><span class="token punctuation">,</span>Charset<span class="token punctuation">.</span><span class="token function">forName</span><span class="token punctuation">(</span><span class="token string">"UTF-8"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span><span class="token function">addTextBody</span><span class="token punctuation">(</span><span class="token string">"param1"</span><span class="token punctuation">,</span> <span class="token string">"10101"</span><span class="token punctuation">,</span> contentType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+builder<span class="token punctuation">.</span><span class="token function">addTextBody</span><span class="token punctuation">(</span><span class="token string">"param1"</span><span class="token punctuation">,</span> <span class="token string">"20202"</span><span class="token punctuation">,</span> contentType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+HttpPost httppost <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">HttpPost</span><span class="token punctuation">(</span><span class="token string">"http://localhost/handler.do"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+httppost<span class="token punctuation">.</span><span class="token function">setEntity</span><span class="token punctuation">(</span>builder<span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">//执行post请求，并处理返回结果</span>
+CloseableHttpClient httpClient <span class="token operator">=</span> HttpClients<span class="token punctuation">.</span><span class="token function">createDefault</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+CloseableHttpResponse response <span class="token operator">=</span> httpClient<span class="token punctuation">.</span><span class="token function">execute</span><span class="token punctuation">(</span>httpPost<span class="token punctuation">)</span><span class="token punctuation">;</span>
+System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"返回请求行："</span><span class="token operator">+</span>response<span class="token punctuation">.</span><span class="token function">getStatusLine</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+HttpEntity responseEntity <span class="token operator">=</span> response<span class="token punctuation">.</span><span class="token function">getEntity</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+String s <span class="token operator">=</span> EntityUtils<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span>responseEntity<span class="token punctuation">,</span> <span class="token string">"utf-8"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"最后结果："</span><span class="token operator">+</span>s<span class="token punctuation">)</span><span class="token punctuation">;</span>
+response<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
 </ol>
-<p>一般我们都是使用<code>CloseableHttpClient httpClient = HttpClients.createDefault();</code>来创建httpclient对象，但是有时候需要定制httpclient对象，比如定制http连接的存活时间等。</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">ConnectionKeepAliveStrategy keepAliveStrat = <span class="keyword">new</span> DefaultConnectionKeepAliveStrategy() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">long</span> <span class="title">getKeepAliveDuration</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">            HttpResponse response,</span></span></span><br><span class="line"><span class="function"><span class="params">            HttpContext context)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">long</span> keepAlive = <span class="keyword">super</span>.getKeepAliveDuration(response, context);</span><br><span class="line">        <span class="keyword">if</span> (keepAlive == -<span class="number">1</span>) &#123;</span><br><span class="line">            <span class="comment">// Keep connections alive 5 seconds if a keep-alive value</span></span><br><span class="line">            <span class="comment">// has not be explicitly set by the server</span></span><br><span class="line">            keepAlive = <span class="number">5000</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> keepAlive;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;;</span><br><span class="line">CloseableHttpClient httpclient = HttpClients.custom()</span><br><span class="line">        .setKeepAliveStrategy(keepAliveStrat)</span><br><span class="line">        .build();</span><br></pre></td></tr></table></figure>
+<h4 id="定制httpclient"><a href="#定制httpclient" class="headerlink" title="定制httpclient"></a>定制httpclient</h4><p>一般我们都是使用<code>CloseableHttpClient httpClient = HttpClients.createDefault();</code>来创建httpclient对象，但是有时候需要定制httpclient对象，比如定制http连接的存活时间等。</p>
+<pre class="line-numbers language-java"><code class="language-java">ConnectionKeepAliveStrategy keepAliveStrat <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">DefaultConnectionKeepAliveStrategy</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+    <span class="token annotation punctuation">@Override</span>
+    <span class="token keyword">public</span> <span class="token keyword">long</span> <span class="token function">getKeepAliveDuration</span><span class="token punctuation">(</span>
+            HttpResponse response<span class="token punctuation">,</span>
+            HttpContext context<span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+        <span class="token keyword">long</span> keepAlive <span class="token operator">=</span> <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">getKeepAliveDuration</span><span class="token punctuation">(</span>response<span class="token punctuation">,</span> context<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>keepAlive <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">&amp;</span>#<span class="token number">123</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// Keep connections alive 5 seconds if a keep-alive value</span>
+            <span class="token comment" spellcheck="true">// has not be explicitly set by the server</span>
+            keepAlive <span class="token operator">=</span> <span class="token number">5000</span><span class="token punctuation">;</span>
+        <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> keepAlive<span class="token punctuation">;</span>
+    <span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span>
+
+<span class="token operator">&amp;</span>#<span class="token number">125</span><span class="token punctuation">;</span><span class="token punctuation">;</span>
+CloseableHttpClient httpclient <span class="token operator">=</span> HttpClients<span class="token punctuation">.</span><span class="token function">custom</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">setKeepAliveStrategy</span><span class="token punctuation">(</span>keepAliveStrat<span class="token punctuation">)</span>
+        <span class="token punctuation">.</span><span class="token function">build</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 <h4 id="httpclient线程安全问题"><a href="#httpclient线程安全问题" class="headerlink" title="httpclient线程安全问题"></a>httpclient线程安全问题</h4><p>httpclient是线程安全的，多个请求可以重用同一个httpclient。</p>
 <p>官方文档的原话是：<code>HttpClient implementations are expected to be thread safe. It is recommended that the same instance of this class is reused for multiple request executions.</code></p>
-<h3 id="curl登录北邮校园网"><a href="#curl登录北邮校园网" class="headerlink" title="curl登录北邮校园网"></a>curl登录北邮校园网</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">root@zxg-1:/etc/default# curl &#x27;http://10.3.8.211/login&#x27; --data &quot;user=201988456&amp;pass=123456&quot;</span><br><span class="line">&lt;!DOCTYPE html&gt;</span><br><span class="line">&lt;html lang=&quot;zh-cn&quot;&gt;</span><br><span class="line">&lt;head&gt;</span><br><span class="line">&lt;meta charset=&quot;utf-8&quot;&gt;</span><br><span class="line">&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0&quot;&gt;</span><br><span class="line">&lt;link rel=&quot;stylesheet&quot; href=&quot;./assets/normalize.css&quot; /&gt;</span><br><span class="line">&lt;link rel=&quot;stylesheet&quot; href=&quot;./assets/login.css&quot; /&gt;</span><br><span class="line">&lt;script src=&quot;./assets/jquery.min.js&quot;&gt;&lt;/script&gt;</span><br><span class="line">&lt;title&gt;网络认证登录&lt;/title&gt;</span><br><span class="line">&lt;/head&gt;</span><br><span class="line">&lt;body&gt;</span><br><span class="line">&lt;div class=&quot;background&quot;&gt;</span><br><span class="line">&lt;/div&gt;</span><br><span class="line">&lt;div style=&quot;text-align:center&quot;&gt;</span><br><span class="line">&lt;div class=&quot;container&quot;&gt;</span><br><span class="line">    &lt;div class=&quot;row header&quot;&gt;</span><br><span class="line">    &lt;/div&gt;</span><br><span class="line">    &lt;div class=&quot;row&quot;&gt;</span><br><span class="line">        &lt;div class=&quot;wrap&quot;&gt;</span><br><span class="line">            &lt;div class=&quot;notice-panel&quot;&gt;</span><br><span class="line">                &lt;div class=&quot;notice-title&quot;&gt;</span><br><span class="line">                    通知</span><br><span class="line">                &lt;/div&gt;</span><br><span class="line">                &lt;div class=&quot;notice-content&quot;&gt;</span><br><span class="line">                    &lt;span&gt;欢迎使用北京邮电大学校园网，账号为学号或工作证号，密码默认为身份证号码后6位(结尾为X请改为0)&lt;/span&gt;</span><br><span class="line">&lt;br/&gt;</span><br><span class="line">&lt;span&gt;如有问题请咨询010-62283039&lt;/span&gt;</span><br><span class="line">                &lt;/div&gt;</span><br><span class="line">            &lt;/div&gt;&lt;div class=&quot;login-panel&quot;&gt;</span><br><span class="line">                &lt;div class=&quot;login-success&quot; style=&quot;display: none;&quot;&gt;</span><br><span class="line">                    &lt;div class=&quot;login-panel__title&quot;&gt;</span><br><span class="line">                        网络认证登录</span><br><span class="line">                    &lt;/div&gt;</span><br><span class="line">                    &lt;h3 class=&quot;center title&quot;&gt;登录成功&lt;/h3&gt;</span><br><span class="line">                    &lt;div class=&quot;notice-content&quot;&gt;</span><br><span class="line">                            &lt;div&gt;您已经登录成功&lt;/div&gt;</span><br><span class="line">                            &lt;div&gt;You have successfully logged in&lt;/div&gt;</span><br><span class="line">                            &lt;div&gt;在完成工作后，请别忘记注销&lt;/div&gt;</span><br><span class="line">                            &lt;div&gt;Please remember to log out&lt;/div&gt;</span><br><span class="line">                    &lt;/div&gt;</span><br><span class="line">......</span><br></pre></td></tr></table></figure>
+<h3 id="curl登录北邮校园网"><a href="#curl登录北邮校园网" class="headerlink" title="curl登录北邮校园网"></a>curl登录北邮校园网</h3><pre class="line-numbers language-shell"><code class="language-shell">root@zxg-1:/etc/default# curl 'http://10.3.8.211/login' --data "user=201988456&pass=123456"
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<link rel="stylesheet" href="./assets/normalize.css" />
+<link rel="stylesheet" href="./assets/login.css" />
+<script src="./assets/jquery.min.js"></script>
+<title>网络认证登录</title>
+</head>
+<body>
+<div class="background">
+</div>
+<div style="text-align:center">
+<div class="container">
+    <div class="row header">
+    </div>
+    <div class="row">
+        <div class="wrap">
+            <div class="notice-panel">
+                <div class="notice-title">
+                    通知
+                </div>
+                <div class="notice-content">
+                    <span>欢迎使用北京邮电大学校园网，账号为学号或工作证号，密码默认为身份证号码后6位(结尾为X请改为0)</span>
+<br/>
+<span>如有问题请咨询010-62283039</span>
+                </div>
+            </div><div class="login-panel">
+                <div class="login-success" style="display: none;">
+                    <div class="login-panel__title">
+                        网络认证登录
+                    </div>
+                    <h3 class="center title">登录成功</h3>
+                    <div class="notice-content">
+                            <div>您已经登录成功</div>
+                            <div>You have successfully logged in</div>
+                            <div>在完成工作后，请别忘记注销</div>
+                            <div>Please remember to log out</div>
+                    </div>
+......<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
 
                 
             </div>
